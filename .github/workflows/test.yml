@@ -1,0 +1,13 @@
+name: Test and collect coverage
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm test
+      - run: bash <(curl -s https://codecov.io/bash)
