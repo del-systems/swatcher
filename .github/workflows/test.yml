@@ -10,4 +10,5 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm ci
       - run: npm test
+      - run: npx webpack
       - run: bash <(curl -s https://codecov.io/bash)
