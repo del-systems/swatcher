@@ -1,0 +1,26 @@
+name: Build distribution packagee
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v2
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        with:
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+      - run: npm ci
+      - run: npx webpack
+      - run: chmod +x dist/index.js
+      - run: |
+          git add -f dist
+          git commit -m "Automatically built distribution package"
+          git push
