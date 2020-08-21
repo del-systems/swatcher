@@ -1,14 +1,20 @@
-import AWS from "aws-sdk"
-import S3Credentials from "./s3_credentials.js"
+import commander from "commander"
+import swatcherVersion from "../version.js"
+import collectCommand from "./collect_command.js"
 
-const s3credentials = new S3Credentials();
-if (!s3credentials.isConfigReady) {
-    throw new Error("S3 config isn't ready");
-}
+commander
+    .version(swatcherVersion)
+    .name("Swatcher - track UI changes like a git history")
+    .description(
+        "This project aimed to collect screenshots from UI tests and store them to S3 compatible storage.\n" +
+        "Screenshots are referenced by their name and every new one will be compared with old ones.\n" +
+        "It will be displayed in HTML report if there any differences. This is not screenshot or snapshot\n" + 
+        "testing, this is history of the each screen's snapshot."
+    )
 
-const s3 = new AWS.S3({
-    endpoint: new AWS.Endpoint(s3credentials.endpoint),
-    accessKeyId: s3credentials.accessKey,
-    secretAccessKey: s3credentials.secretKey
-});
+commander
+    .command("collect <dir>")
+    .description("Collect screenshots from specified directory")
+    .action(collectCommand)
 
+commander.parse()
