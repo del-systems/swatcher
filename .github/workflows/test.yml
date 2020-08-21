@@ -12,3 +12,12 @@ jobs:
       - run: npm test
       - run: npx webpack
       - run: bash <(curl -s https://codecov.io/bash)
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: rm -rf dist
+        name: remove dist folder before running linter 
+      - uses: github/super-linter@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
