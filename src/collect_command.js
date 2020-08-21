@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk'
 import S3Credentials from './s3_credentials.js'
 
-export default function (dir) {
+export default async function (dir) {
   const s3credentials = new S3Credentials()
   if (!s3credentials.isConfigReady) {
     throw new Error('S3 config isn\'t ready')
