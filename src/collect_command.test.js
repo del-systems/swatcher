@@ -1,36 +1,38 @@
 beforeEach(jest.resetModules)
 beforeEach(jest.clearAllMocks)
 
-function collectCommand() { require("./collect_command.js").default(arguments) }
+it('should check for aws configuration and throw an error if configuration isnt ready', () => {
+  jest.doMock('./s3_credentials.js', () => ({
+    default: jest.fn().mockReturnValue({ isConfigReady: false }),
+    __esModule: true
+  }))
 
-it("should check for aws configuration and throw an error if configuration isnt ready", () => {
-    jest.mock("./s3_credentials.js", () => jest.fn(
-        () => ({ isConfigReady: false })
-    ))
-
-    expect(collectCommand).toThrowError()
+  expect(require('./collect_command.js').default).toThrowError()
 })
 
-it("should create a new AWS endpoint when configuration is ready", () => {
-    jest.mock("aws-sdk", () => ({
-        Endpoint: jest.fn(),
-        S3: jest.fn()
-    }))
+it('should create a new AWS endpoint when configuration is ready', () => {
+  jest.doMock('./s3_credentials.js', () => ({
+    __esModule: true,
+    default: jest.fn(() => ({ isConfigReady: true, endpoint: 'aws_endpoint', accessKey: 'aws_key', secretKey: 'secret' }))
+  }))
 
-    jest.mock("./s3_credentials.js", () => jest.fn(
-        () => ({ isConfigReady: true, endpoint: 'aws_endpoint', accessKey: 'aws_key', secretKey: 'secret' })
-    ))
+  jest.doMock('aws-sdk', () => ({
+    default: {
+      Endpoint: jest.fn(),
+      S3: jest.fn()
+    },
+    __esModule: true
+  }))
 
-    let aws = require("aws-sdk")
-    let s3cred = require("./s3_credentials.js")
+  require('./collect_command.js').default()
 
-    collectCommand()
-
-    expect(s3cred).toHaveBeenCalledTimes(1)
-    expect(aws.Endpoint).toHaveBeenCalledWith("aws_endpoint")
-    expect(aws.S3).toHaveBeenCalledWith({
-        endpoint: aws.Endpoint.mock.instances[0],
-        accessKeyId: "aws_key",
-        secretAccessKey: "secret"
-    })
+  const s3cred = require('./s3_credentials.js').default
+  const aws = require('aws-sdk').default
+  expect(s3cred).toHaveBeenCalledTimes(1)
+  expect(aws.Endpoint).toHaveBeenCalledWith('aws_endpoint')
+  expect(aws.S3).toHaveBeenCalledWith({
+    endpoint: aws.Endpoint.mock.instances[0],
+    accessKeyId: 'aws_key',
+    secretAccessKey: 'secret'
+  })
 })
