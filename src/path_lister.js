@@ -6,7 +6,7 @@ import pathModule from 'path'
  * @param {string} path
  * @returns {Promise<string>}
  */
-async function getRealPath (path) {
+export async function getRealPath (path) {
   return new Promise((resolve, reject) => {
     fs.realpath(path, (err, realPath) => {
       if (err) reject(err)
