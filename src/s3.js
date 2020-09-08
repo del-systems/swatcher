@@ -9,6 +9,7 @@ export default class {
     if (!this._credentials.isConfigReady) throw new Error('S3 config isn\'t ready')
 
     this._awsS3 = new AWS.S3({
+      s3ForcePathStyle: this._credentials.forcePathStyleBucket,
       endpoint: new AWS.Endpoint(this._credentials.endpoint),
       accessKeyId: this._credentials.accessKey,
       secretAccessKey: this._credentials.secretKey

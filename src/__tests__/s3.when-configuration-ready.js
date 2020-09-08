@@ -6,7 +6,7 @@ beforeEach(jest.clearAllMocks)
 
 jest.mock('../s3_credentials', () => ({
   __esModule: true,
-  default: jest.fn(() => ({ isConfigReady: true, endpoint: 'aws_endpoint', accessKey: 'aws_key', secretKey: 'secret', bucketName: 'bucket' }))
+  default: jest.fn(() => ({ isConfigReady: true, endpoint: 'aws_endpoint', accessKey: 'aws_key', secretKey: 'secret', bucketName: 'bucket', forcePathStyleBucket: 'force-style' }))
 }))
 
 jest.mock('fs', () => ({
@@ -54,6 +54,7 @@ it('should create a new AWS when configuration is ready', () => {
   expect(s3cred).toHaveBeenCalledTimes(1)
   expect(aws.Endpoint).toHaveBeenCalledWith('aws_endpoint')
   expect(aws.S3).toHaveBeenCalledWith({
+    s3ForcePathStyle: 'force-style',
     endpoint: aws.Endpoint.mock.instances[0],
     accessKeyId: 'aws_key',
     secretAccessKey: 'secret'

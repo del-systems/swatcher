@@ -63,7 +63,21 @@ describe('Credential should prioritize some keys', () => {
       { AWS_BUCKET: 'wow' },
       'wow'
     ],
-
+    [
+      'forcePathStyleBucket',
+      {},
+      false
+    ],
+    [
+      'forcePathStyleBucket',
+      { SWATCHER_S3_FORCE_PATH_STYLE_BUCKET: '1' },
+      true
+    ],
+    [
+      'forcePathStyleBucket',
+      { SWATCHER_S3_FORCE_PATH_STYLE_BUCKET: '' },
+      false
+    ],
     [
       'isConfigReady',
       {},
