@@ -1,6 +1,6 @@
 import commander from 'commander'
-import swatcherVersion from '../version.js'
-import collectCommand from './collect_command.js'
+import swatcherVersion from '../../version'
+import collectCommand from '../collect_command'
 
 jest.mock('commander', () => {
   const mock = {}
@@ -20,10 +20,10 @@ jest.mock('commander', () => {
   return mock
 })
 
-jest.mock('./collect_command.js', () => ({ __esModule: true, default: jest.fn() }))
+jest.mock('../collect_command', () => ({ __esModule: true, default: jest.fn() }))
 
-it('', () => {
-  require('./index.js')
+it('should configure commander', () => {
+  require('../index.js')
   expect(commander.version).toHaveBeenCalledWith(swatcherVersion)
   expect(commander.name).toHaveBeenCalled()
   expect(commander.description).toHaveBeenCalledTimes(1)

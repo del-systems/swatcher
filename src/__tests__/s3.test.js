@@ -1,5 +1,5 @@
 const newS3 = () => {
-  const S3 = require('./s3.js').default
+  const S3 = require('../s3').default
   return new S3()
 }
 
@@ -7,7 +7,7 @@ beforeEach(jest.resetModules)
 beforeEach(jest.clearAllMocks)
 
 it('should check for aws configuration and throw an error if configuration isnt ready', () => {
-  jest.doMock('./s3_credentials.js', () => ({
+  jest.doMock('../s3_credentials', () => ({
     default: jest.fn().mockReturnValue({ isConfigReady: false }),
     __esModule: true
   }))
@@ -17,7 +17,7 @@ it('should check for aws configuration and throw an error if configuration isnt 
 
 describe('when configuration is ready', () => {
   beforeEach(() => {
-    jest.doMock('./s3_credentials.js', () => ({
+    jest.doMock('../s3_credentials', () => ({
       __esModule: true,
       default: jest.fn(() => ({ isConfigReady: true, endpoint: 'aws_endpoint', accessKey: 'aws_key', secretKey: 'secret', bucketName: 'bucket' }))
     }))
@@ -65,7 +65,7 @@ describe('when configuration is ready', () => {
 
   it('should create a new AWS', () => {
     newS3()
-    const s3cred = require('./s3_credentials.js').default
+    const s3cred = require('../s3_credentials').default
     const aws = require('aws-sdk').default
     expect(s3cred).toHaveBeenCalledTimes(1)
     expect(aws.Endpoint).toHaveBeenCalledWith('aws_endpoint')
