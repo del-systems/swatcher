@@ -31,7 +31,7 @@ export default class {
     return new Promise((resolve, reject) => fs.readFile(filePath, (err, buffer) => {
       if (err) reject(err)
       else {
-        this._awsS3.putObject({ ACL: 'public-read', Bucket: this._credentials.bucketName, Key: key, ContentType: contentType }, (awsError, awsData) => {
+        this._awsS3.putObject({ ACL: 'public-read', Bucket: this._credentials.bucketName, Key: key, ContentType: contentType, Body: buffer }, (awsError, awsData) => {
           if (awsError) reject(awsError)
           else resolve(awsData)
         })

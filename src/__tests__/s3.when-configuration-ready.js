@@ -86,7 +86,7 @@ describe('upload', () => {
   it('should return aws data if no errors occured', async () => {
     const s3 = new S3()
     await expect(s3.upload('file', 'key', 'content-type')).resolves
-    expect(aws.S3.mock.instances[0].putObject.mock.calls[0][0]).toEqual({ ACL: 'public-read', Bucket: 'bucket', Key: 'key', ContentType: 'content-type' })
+    expect(aws.S3.mock.instances[0].putObject.mock.calls[0][0]).toEqual({ ACL: 'public-read', Bucket: 'bucket', Key: 'key', ContentType: 'content-type', Body: Buffer.from('file') })
     expect(aws.S3.mock.instances[0].putObject.mock.calls[0].length).toEqual(2)
   })
 })
