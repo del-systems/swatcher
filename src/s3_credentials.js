@@ -21,6 +21,10 @@ export default class {
     return readPrioritized('SWATCHER_S3_ENDPOINT', 'AWS_ENDPOINT')
   }
 
+  get forcePathStyleBucket () {
+    return (!!readPrioritized('SWATCHER_S3_FORCE_PATH_STYLE_BUCKET')) || false
+  }
+
   get isConfigReady () {
     return !!(this.accessKey && this.bucketName && this.secretKey && this.endpoint)
   }
