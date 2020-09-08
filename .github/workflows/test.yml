@@ -21,3 +21,19 @@ jobs:
       - uses: github/super-linter@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  check-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            if (!context.payload.pull_request) {
+              console.log('Not pull request')
+              return
+            }
+            const files = await github.paginate(github.pulls.listFiles, { owner: context.repo.owner, repo: context.repo.repo, pull_number: context.payload.pull_request.number})
+            files.forEach(file => {
+              if (file.filename === 'dist/index.js') throw new Error('You accidentally commited "dist/index.js". This file should be generated only by CD. Run "git checkout master dist/index.js"')
+              if (file.filename === 'version.js') throw new Error('You accidentally commited "version.js". This file should be generated only by CD. Run "git checkout master version.js"')
+            })
