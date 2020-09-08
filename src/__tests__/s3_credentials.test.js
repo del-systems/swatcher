@@ -1,5 +1,5 @@
 import mockedEnv from 'mocked-env'
-import S3Credentials from './s3_credentials.js'
+import S3Credentials from '../s3_credentials'
 
 describe('Credential should prioritize some keys', () => {
   test.each([

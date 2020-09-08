@@ -1,5 +1,5 @@
 import fs from 'fs'
-import isPNG from './is_png.js'
+import isPNG from '../is_png'
 
 beforeEach(jest.clearAllMocks)
 

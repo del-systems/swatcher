@@ -1,4 +1,4 @@
-import listFilesFromPath from './path_lister.js'
+import listFilesFromPath from '../path_lister'
 
 jest.mock('fs', () => ({
   realpath: jest.fn((path, callback) => {
