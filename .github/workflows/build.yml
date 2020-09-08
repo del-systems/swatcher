@@ -21,6 +21,6 @@ jobs:
       - run: npx gulp
       - run: chmod +x dist/index.js
       - run: |
-          git add -f dist version.js
+          git add -f dist version.js package.json package-lock.json
           git commit -m "Automatically built distribution package"
           git push
