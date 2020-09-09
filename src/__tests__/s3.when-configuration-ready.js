@@ -25,6 +25,34 @@ jest.mock('aws-sdk', () => ({
         else callback(null, jest.fn())
       })
 
+      const fakeObjects = [
+        'root/1',
+        'root/2/',
+        'root/3',
+        'root/3',
+        'root/4/',
+        'root/4/'
+      ]
+
+      this.listObjects = jest.fn((params, callback) => {
+        if (params.Prefix.startsWith('p:')) callback(new Error(`Aws error for ${params.Prefix}`))
+        else {
+          const fakeItem = fakeObjects.shift()
+          const isTruncated = fakeObjects.length !== 0
+          const isObject = !fakeItem.endsWith('/')
+          const nextMarker = fakeObjects.length === 3 ? null : fakeItem
+          callback(
+            null,
+            {
+              IsTruncated: isTruncated,
+              NextMarker: nextMarker,
+              Contents: isObject ? [{ Key: fakeItem }] : [],
+              CommonPrefixes: isObject ? [] : [{ Prefix: fakeItem }]
+            }
+          )
+        }
+      })
+
       return this
     })
   },
@@ -89,5 +117,27 @@ describe('upload', () => {
     await expect(s3.upload('file', 'key', 'content-type')).resolves
     expect(aws.S3.mock.instances[0].putObject.mock.calls[0][0]).toEqual({ ACL: 'public-read', Bucket: 'bucket', Key: 'key', ContentType: 'content-type', Body: Buffer.from('file') })
     expect(aws.S3.mock.instances[0].putObject.mock.calls[0].length).toEqual(2)
+  })
+})
+
+describe('list', () => {
+  it('should rethrow errors if any', async () => {
+    await expect(new S3().list('p:prefix')).rejects.toThrowError('Aws error for p:prefix')
+  })
+
+  it('should paginate if needed and collect all objects', async () => {
+    await expect(new S3().list('root/')).resolves.toEqual({
+      prefixes: ['2/', '4/'],
+      keys: ['1', '3']
+    })
+
+    expect(aws.S3.mock.instances[0].listObjects.mock.calls).toEqual([
+      [{ Bucket: 'bucket', Delimiter: '/', Prefix: 'root/', Marker: undefined }, expect.anything()],
+      [{ Bucket: 'bucket', Delimiter: '/', Prefix: 'root/', Marker: 'root/1' }, expect.anything()],
+      [{ Bucket: 'bucket', Delimiter: '/', Prefix: 'root/', Marker: 'root/2/' }, expect.anything()],
+      [{ Bucket: 'bucket', Delimiter: '/', Prefix: 'root/', Marker: 'root/3' }, expect.anything()],
+      [{ Bucket: 'bucket', Delimiter: '/', Prefix: 'root/', Marker: 'root/3' }, expect.anything()],
+      [{ Bucket: 'bucket', Delimiter: '/', Prefix: 'root/', Marker: 'root/4/' }, expect.anything()]
+    ])
   })
 })
