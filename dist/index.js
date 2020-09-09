@@ -2775,7 +2775,7 @@ var commander = __webpack_require__(0);
 var commander_default = /*#__PURE__*/__webpack_require__.n(commander);
 
 // CONCATENATED MODULE: ./version.js
-/* harmony default export */ var version = ('0.0.15');
+/* harmony default export */ var version = ('0.0.16');
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__(1);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
