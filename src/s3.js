@@ -28,6 +28,39 @@ export default class {
     })
   }
 
+  async _paginatedList (prefix, nextMarker) {
+    return new Promise((resolve, reject) => {
+      this._awsS3.listObjects({ Bucket: this._credentials.bucketName, Delimiter: '/', Marker: nextMarker, Prefix: prefix }, (awsError, awsData) => {
+        if (awsError) reject(awsError)
+        else {
+          nextMarker = awsData.IsTruncated ? (awsData.NextMarker ?? awsData.Contents.slice().pop().Key) : undefined
+          const keys = awsData.Contents.map(item => item.Key)
+          const prefixes = awsData.CommonPrefixes.map(item => item.Prefix)
+          resolve({ nextMarker, keys, prefixes })
+        }
+      })
+    })
+  }
+
+  async list (prefix) {
+    let nextMarker
+    let keys = []
+    let prefixes = []
+    do {
+      const data = await this._paginatedList(prefix, nextMarker)
+      nextMarker = data.nextMarker
+      keys = keys.concat(data.keys)
+      prefixes = prefixes.concat(data.prefixes)
+    } while (nextMarker !== undefined)
+
+    const unique = (v, i, a) => (a.indexOf(v) === i)
+
+    return {
+      prefixes: prefixes.map(item => item.substring(prefix.length)).filter(unique),
+      keys: keys.map(item => item.substring(prefix.length)).filter(unique)
+    }
+  }
+
   async upload (filePath, key, contentType) {
     return new Promise((resolve, reject) => fs.readFile(filePath, (err, buffer) => {
       if (err) reject(err)
