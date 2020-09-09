@@ -1,6 +1,6 @@
 {
   "name": "swatcher",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Screenshot Watcher",
   "main": "src/index.js",
   "scripts": {
