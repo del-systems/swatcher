@@ -27,7 +27,9 @@
     "@babel/runtime": "^7.11.2",
     "aws-sdk": "^2.734.0",
     "commander": "^6.0.0",
-    "node-downloader-helper": "^1.0.13"
+    "looks-same": "^7.2.3",
+    "node-downloader-helper": "^1.0.13",
+    "tmp-promise": "^3.0.2"
   },
   "bin": {
     "swatcher": "dist/index.js"
