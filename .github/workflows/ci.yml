@@ -20,45 +20,36 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: rm -rf dist
-        name: remove dist folder before running linter 
+        name: remove dist folder before running linter
       - uses: github/super-linter@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   check-files:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            if (!context.payload.pull_request) {
-              console.log('Not pull request')
-              return
-            }
-            const files = await github.paginate(github.pulls.listFiles, { owner: context.repo.owner, repo: context.repo.repo, pull_number: context.payload.pull_request.number})
-            files.forEach(file => {
-              if (file.filename === 'dist/index.js') throw new Error('You accidentally commited "dist/index.js". This file should be generated only by CD. Run "git checkout master dist/index.js"')
-              if (file.filename === 'version.js') throw new Error('You accidentally commited "version.js". This file should be generated only by CD. Run "git checkout master version.js"')
-            })
-  
-  build_dist:
-    runs-on: ubuntu-latest
-    needs: [test, lint, check-files]
-    if: ${{ github.ref == 'refs/heads/master' }}
-    steps:
       - uses: actions/checkout@v2
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v2
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        with:
-          git_user_signingkey: true
-          git_commit_gpgsign: true
       - run: npm ci
       - run: npx gulp
-      - run: chmod +x dist/index.js
-      - run: |
-          git add -f dist version.js package.json package-lock.json
-          git commit -m "Automatically built distribution package"
-          git push
+      - name: check if freshly built dist folder differs from commited one
+        run: git status --porcelain | tee /dev/stderr | ( ! grep -q '.' )
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - name: check if version is synced and valid
+        run: |
+          npm install @babel/core @babel/node semver
+          cat <<EOF > check_version.js
+          const assert = require('assert').strict;
+          const version = require('./version.js').default;
+          const packageVersion = require('./package.json').version;
+          const semver = require('semver');
+
+          assert.equal(version, packageVersion, 'package.json version should equal to embedded version.js file. This is done to populate help method of executable');
+          assert.ok(semver.valid(version))
+          EOF
+          npx babel-node check_version.js
+      - uses: del-systems/check-if-version-bumped@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
