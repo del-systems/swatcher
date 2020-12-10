@@ -86,8 +86,8 @@ describe('ci should read all available env variables', () => {
       { TRAVIS_BRANCH: 'dev', TRAVIS_BUILD_NUMBER: '2', TRAVIS_PULL_REQUEST_BRANCH: 'one' },
       true
     ]
-  ])('`new CI().%s` from %p should return %p', (property, env, expected) => {
+  ])('`(await CI()).%s` from %p should return %p', async (property, env, expected) => {
     afterEach(fakeEnv(env))
-    expect(new CI()[property]).toEqual(expected)
+    await expect((await CI())[property]).toEqual(expected)
   })
 })
