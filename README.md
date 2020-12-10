@@ -1,6 +1,6 @@
 # Swatcher - track UI changes like a git history
 [![codecov](https://codecov.io/gh/del-systems/swatcher/branch/master/graph/badge.svg?token=V7AJCMJI7V)](https://codecov.io/gh/del-systems/swatcher)
-![Test and collect coverage](https://github.com/del-systems/swatcher/workflows/Test%20and%20collect%20coverage/badge.svg?branch=master)
+![.github/workflows/ci.yml](https://github.com/del-systems/swatcher/workflows/.github/workflows/ci.yml/badge.svg)
 
 _Forget answering questions when the particular screen was changed and why_
 
