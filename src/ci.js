@@ -6,7 +6,7 @@ const readPrioritized = (...names) => safeName(
     .reduce((result, current) => result || current, undefined)
 )
 
-export default class {
+class CIVariables {
   get baseBranchName () {
     return readPrioritized('TRAVIS_BRANCH')
   }
@@ -30,4 +30,12 @@ export default class {
   get isVariablesReady () {
     return !!(this.currentBranch && this.buildNumber)
   }
+}
+
+/**
+ * Fetches current CI and checks veriables
+ * @returns {CIVariables}
+ */
+export default async function () {
+  return new CIVariables()
 }

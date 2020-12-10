@@ -5,7 +5,7 @@ import isPNG from './is_png'
 
 export default async function (dir) {
   const s3 = new S3()
-  const ci = new CI()
+  const ci = await CI()
   if (!ci.isVariablesReady) throw new Error('CI variables aren\'t ready yet')
 
   dir = await getRealPath(dir)
