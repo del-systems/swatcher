@@ -13,7 +13,7 @@ commander
   )
 
 commander
-  .command('collect <dir>')
+  .command('collect <dir> [other_dirs...]')
   .description('Collect screenshots from specified directory')
   .action(collectCommand)
 
