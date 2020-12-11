@@ -4,9 +4,6 @@ const webpack = require('webpack')
 module.exports = {
   target: 'node',
   entry: './src/index.js',
-  optimization: {
-    minimize: false
-  },
   plugins: [
     new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true })
   ],
