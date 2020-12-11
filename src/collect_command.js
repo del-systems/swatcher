@@ -2,7 +2,7 @@ import CI from './ci'
 import S3 from './s3'
 import pathLister, { getRealPath } from './path_lister'
 import isPNG from './is_png'
-import { base32 } from 'rfc4648'
+import { safeBase32Encode } from './base32'
 
 export default async function (dir, otherDirs) {
   const s3 = new S3()
@@ -10,7 +10,7 @@ export default async function (dir, otherDirs) {
 
   const dirs = await asyncMap([dir].concat(otherDirs ?? []), async d => await getRealPath(d))
   const pngFiles = (await listPNGFiles(dirs))
-    .map(path => ({ path, key: `${ci.headSha}/${base32.stringify(Buffer.from(path, 'utf8'))}.png`, contentType: 'image/png' }))
+    .map(path => ({ path, key: `${ci.headSha}/${safeBase32Encode(path)}`, contentType: 'image/png' }))
 
   await uploadFiles(s3, pngFiles)
 }
