@@ -18,7 +18,11 @@ export default class {
   }
 
   get endpoint () {
-    return readPrioritized('SWATCHER_S3_ENDPOINT', 'AWS_ENDPOINT')
+    return this.region ? `https://s3.${this.region}.amazonaws.com` : readPrioritized('SWATCHER_S3_ENDPOINT', 'AWS_ENDPOINT')
+  }
+
+  get region () {
+    return readPrioritized('SWATCHER_S3_REGION', 'AWS_REGION')
   }
 
   get forcePathStyleBucket () {

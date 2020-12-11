@@ -79,6 +79,11 @@ describe('Credential should prioritize some keys', () => {
       false
     ],
     [
+      'endpoint',
+      { AWS_REGION: 'region-us-1' },
+      'https://s3.region-us-1.amazonaws.com'
+    ],
+    [
       'isConfigReady',
       {},
       false
@@ -101,6 +106,11 @@ describe('Credential should prioritize some keys', () => {
     [
       'isConfigReady',
       { SWATCHER_S3_ENDPOINT: 'endpoint', SWATCHER_S3_ACCESS_KEY: 'accessKey', SWATCHER_S3_SECRET_KEY: 'secret', SWATCHER_S3_BUCKET_NAME: 'bucket' },
+      true
+    ],
+    [
+      'isConfigReady',
+      { SWATCHER_S3_REGION: 'endpoint', SWATCHER_S3_ACCESS_KEY: 'accessKey', SWATCHER_S3_SECRET_KEY: 'secret', SWATCHER_S3_BUCKET_NAME: 'bucket' },
       true
     ]
   ])('`new S3Credentials().%s` from %p should return %p', (property, env, expected) => {
