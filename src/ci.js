@@ -1,41 +1,32 @@
-const safeName = name => name?.replace(/\W/gm, '_')
+import sjson from 'secure-json-parse'
+import fs from 'fs'
+import { promisify } from 'util'
 
-const readPrioritized = (...names) => safeName(
-  names
-    .map(envName => process.env[envName])
-    .reduce((result, current) => result || current, undefined)
-)
+class GithubActionsEnvironment {
+  constructor (githubPayload) {
+    switch (process.env.GITHUB_EVENT_NAME) {
+      case 'pull_request':
+        this.baseSha = githubPayload.base?.sha
+        this.headSha = githubPayload.head?.sha
+        break
+      case 'push':
+        this.baseSha = githubPayload.parents[0]?.sha
+        this.headSha = githubPayload.sha
+        break
+    }
 
-class CIVariables {
-  get baseBranchName () {
-    return readPrioritized('TRAVIS_BRANCH')
-  }
-
-  get currentBranch () {
-    return this.isPullRequest ? this.pullRequestBranch : this.baseBranchName
-  }
-
-  get buildNumber () {
-    return readPrioritized('TRAVIS_BUILD_NUMBER')
-  }
-
-  get pullRequestBranch () {
-    return readPrioritized('TRAVIS_PULL_REQUEST_BRANCH')
-  }
-
-  get isPullRequest () {
-    return !!this.pullRequestBranch
-  }
-
-  get isVariablesReady () {
-    return !!(this.currentBranch && this.buildNumber)
+    if (!this.baseSha || !this.headSha) throw new Error('Base sha and head sha couldn\'t be resolved')
   }
 }
 
 /**
  * Fetches current CI and checks veriables
- * @returns {CIVariables}
+ * @returns {GithubActionsEnvironment}
  */
 export default async function () {
-  return new CIVariables()
+  const eventPath = process.env.GITHUB_EVENT_PATH
+  if (!eventPath) throw new Error('process.env.GITHUB_EVENT_PATH returned falsy value')
+
+  const payload = sjson.parse(await promisify(fs.readFile)(eventPath, 'utf8'))
+  return new GithubActionsEnvironment(payload)
 }

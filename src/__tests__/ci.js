@@ -7,87 +7,81 @@ const fakeEnv = (variables) => {
   return () => { process.env = previous }
 }
 
+const fakedGithubPayload = async payload => {
+  const fs = jest.requireActual('fs')
+  const promisify = jest.requireActual('util').promisify
+  const temporary = jest.requireActual('tmp-promise')
+  const { fd, path, cleanup } = await temporary.file()
+  if (fd) await promisify(fs.close)(fd) // we need only path
+  await promisify(fs.writeFile)(path, JSON.stringify(payload))
+
+  const savedOriginalEnvVariable = process.env.GITHUB_EVENT_PATH
+  process.env.GITHUB_EVENT_PATH = path
+  return () => {
+    process.env.GITHUB_EVENT_PATH = savedOriginalEnvVariable
+    cleanup()
+  }
+}
+
 describe('ci should read all available env variables', () => {
   test.each([
     /**
      * [
      *  'property of CI',
      *  { ENV_VARIABLE: 'value' },
+     *  { github payload contents },
      *  'expected value'
      *  ]
      */
     [
-      'baseBranchName',
-      { TRAVIS_BRANCH: 'branch' },
-      'branch'
+      'baseSha',
+      { GITHUB_EVENT_NAME: 'pull_request' },
+      { base: { sha: '123' }, head: { sha: '000' } },
+      '123'
     ],
     [
-      'baseBranchName',
-      { TRAVIS_BRANCH: '123-фыв' },
-      '123____'
+      'headSha',
+      { GITHUB_EVENT_NAME: 'pull_request' },
+      { base: { sha: '111' }, head: { sha: '0101' } },
+      '0101'
     ],
     [
-      'buildNumber',
-      { TRAVIS_BUILD_NUMBER: '12' },
-      '12'
+      'headSha',
+      { GITHUB_EVENT_NAME: 'push' },
+      { sha: 'bbb', parents: [{ sha: 'v' }] },
+      'bbb'
     ],
     [
-      'pullRequestBranch',
-      { TRAVIS_BRANCH: 'wow' },
-      undefined
-    ],
-    [
-      'pullRequestBranch',
-      { TRAVIS_PULL_REQUEST_BRANCH: '1-feature' },
-      '1_feature'
-    ],
-    [
-      'isPullRequest',
-      { },
-      false
-    ],
-    [
-      'isPullRequest',
-      { TRAVIS_PULL_REQUEST_BRANCH: 'something' },
-      true
-    ],
-    [
-      'isPullRequest',
-      { TRAVIS_PULL_REQUEST_BRANCH: '' },
-      false
-    ],
-    [
-      'currentBranch',
-      { TRAVIS_BRANCH: 'master', TRAVIS_PULL_REQUEST_BRANCH: '' },
-      'master'
-    ],
-    [
-      'currentBranch',
-      { TRAVIS_BRANCH: 'master', TRAVIS_PULL_REQUEST_BRANCH: '2-feature' },
-      '2_feature'
-    ],
-    [
-      'isVariablesReady',
-      {},
-      false
-    ],
-    [
-      'isVariablesReady',
-      { TRAVIS_BRANCH: '' },
-      false
-    ],
-    [
-      'isVariablesReady',
-      { TRAVIS_BRANCH: 'mast', TRAVIS_BUILD_NUMBER: '1' },
-      true
-    ],
-    [
-      'isVariablesReady',
-      { TRAVIS_BRANCH: 'dev', TRAVIS_BUILD_NUMBER: '2', TRAVIS_PULL_REQUEST_BRANCH: 'one' },
-      true
+      'baseSha',
+      { GITHUB_EVENT_NAME: 'push' },
+      { sha: '12345', parents: [{ sha: 'first_parent' }, { sha: 'secondOne' }, { sha: 'third' }] },
+      'first_parent'
     ]
-  ])('`(await CI()).%s` from %p should return %p', async (property, env, expected) => {
-    afterEach(fakeEnv(env))
+  ])('`(await CI()).%s` from %p should return %p', async (property, env, payload, expected) => {
+    const resetFakedEnvVariables = fakeEnv(env)
+    const resetFakedGithubActionsPayload = await fakedGithubPayload(payload)
+
     await expect((await CI())[property]).toEqual(expected)
+
+    resetFakedGithubActionsPayload()
+    resetFakedEnvVariables()
   })
+})
+
+it('should throw an error when invalid GITHUB_EVENT_NAME is passed', async () => {
+  const resetFakedEnvVariables = fakeEnv({ GITHUB_EVENT_NAME: 'issue_opened' })
+  const resetFakedGithubActionsPayload = await fakedGithubPayload({})
+
+  await expect(CI()).rejects.toEqual(expect.any(Error))
+
+  resetFakedEnvVariables()
+  resetFakedGithubActionsPayload()
+})
+
+it('should throw an error when GITHUB_EVENT_PATH isn\'t given', async () => {
+  const resetFakedEnvVariables = fakeEnv({})
+
+  await expect(CI()).rejects.toEqual(expect.any(Error))
+
+  resetFakedEnvVariables()
 })

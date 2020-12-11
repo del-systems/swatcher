@@ -7,9 +7,8 @@ import collectCommand from '../collect_command'
 jest.mock('../ci', () => ({
   __esModule: true,
   default: jest.fn(() => ({
-    isVariablesReady: true,
-    currentBranch: 'ci-currentBranch',
-    buildNumber: '12345678'
+    baseSha: 'baseSha',
+    headSha: 'headSha'
   }))
 }))
 
@@ -41,8 +40,8 @@ it('should upload only png files with relative path to dir but prefixed with ci 
   expect(CI).toHaveBeenCalledTimes(1)
   expect(S3).toHaveBeenCalledTimes(1)
   expect(S3.mock.instances[0].upload.mock.calls).toEqual([
-    ['/home/png1', 'ci-currentBranch/12345678/png1', 'image/png'],
-    ['/home/png2', 'ci-currentBranch/12345678/png2', 'image/png']
+    ['/home/png1', 'headSha/F5UG63LFF5YG4ZZR.png', 'image/png'],
+    ['/home/png2', 'headSha/F5UG63LFF5YG4ZZS.png', 'image/png']
   ])
   expect(isPNG.mock.calls).toEqual([
     ['/home/png1'],

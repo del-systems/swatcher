@@ -2,15 +2,15 @@ import CI from './ci'
 import S3 from './s3'
 import pathLister, { getRealPath } from './path_lister'
 import isPNG from './is_png'
+import { base32 } from 'rfc4648'
 
 export default async function (dir) {
   const s3 = new S3()
   const ci = await CI()
-  if (!ci.isVariablesReady) throw new Error('CI variables aren\'t ready yet')
 
   dir = await getRealPath(dir)
   const pngFiles = (await listPNGFiles(dir))
-    .map(path => ({ path, key: `${ci.currentBranch}/${ci.buildNumber}/${path.substring(dir.length + 1)}`, contentType: 'image/png' }))
+    .map(path => ({ path, key: `${ci.headSha}/${base32.stringify(Buffer.from(path, 'utf8'))}.png`, contentType: 'image/png' }))
 
   await uploadFiles(s3, pngFiles)
 }
