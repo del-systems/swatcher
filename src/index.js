@@ -1,6 +1,7 @@
 import commander from 'commander'
-import swatcherVersion from '../version.js'
-import collectCommand from './collect_command.js'
+import swatcherVersion from '../version'
+import collectCommand from './collect_command'
+import generateDiffCommand from './generate_diff_command'
 
 commander
   .version(swatcherVersion)
@@ -16,5 +17,10 @@ commander
   .command('collect <dir> [other_dirs...]')
   .description('Collect screenshots from specified directory')
   .action(collectCommand)
+
+commander
+  .command('generate-diff')
+  .description('Generate diffs for already collected screenshots')
+  .action(generateDiffCommand)
 
 commander.parse()
