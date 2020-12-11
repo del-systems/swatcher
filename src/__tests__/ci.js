@@ -10,9 +10,8 @@ const fakeEnv = (variables) => {
 const fakedGithubPayload = async payload => {
   const fs = jest.requireActual('fs')
   const promisify = jest.requireActual('util').promisify
-  const temporary = jest.requireActual('tmp-promise')
-  const { fd, path, cleanup } = await temporary.file()
-  if (fd) await promisify(fs.close)(fd) // we need only path
+  const temporaryFile = jest.requireActual('../temporary_file').default
+  const { path, cleanup } = await temporaryFile()
   await promisify(fs.writeFile)(path, JSON.stringify(payload))
 
   const savedOriginalEnvVariable = process.env.GITHUB_EVENT_PATH
