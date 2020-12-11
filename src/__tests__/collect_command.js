@@ -40,8 +40,8 @@ it('should upload only png files with relative path to dir but prefixed with ci 
   expect(CI).toHaveBeenCalledTimes(1)
   expect(S3).toHaveBeenCalledTimes(1)
   expect(S3.mock.instances[0].upload.mock.calls).toEqual([
-    ['/home/png1', 'headSha/F5UG63LFF5YG4ZZR.png', 'image/png'],
-    ['/home/png2', 'headSha/F5UG63LFF5YG4ZZS.png', 'image/png']
+    ['/home/png1', 'headSha/F5UG63LFF5YG4ZZR', 'image/png'],
+    ['/home/png2', 'headSha/F5UG63LFF5YG4ZZS', 'image/png']
   ])
   expect(isPNG.mock.calls).toEqual([
     ['/home/png1'],
