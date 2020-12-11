@@ -1,6 +1,7 @@
 import S3 from '../s3'
 import aws from 'aws-sdk'
 import s3cred from '../s3_credentials'
+import { __changePath } from '../temporary_dir'
 
 beforeEach(jest.clearAllMocks)
 
@@ -15,6 +16,15 @@ jest.mock('fs', () => ({
     else callback(null, Buffer.from(path))
   })
 }))
+
+jest.mock('../temporary_dir', () => {
+  let pathToReturn
+  return {
+    __esModule: true,
+    __changePath: path => { pathToReturn = path },
+    default: async () => ({ path: pathToReturn })
+  }
+})
 
 jest.mock('aws-sdk', () => ({
   default: {
@@ -91,13 +101,15 @@ it('should create a new AWS when configuration is ready', () => {
 
 describe('download', () => {
   it('should use node-downloader-helper and forward errors if any', async () => {
-    await expect(new S3().download('example.png', 'f:/usr/tmp')).rejects.toThrowError('Error for f:/usr/tmp')
+    __changePath('f:/usr/tmp')
+    await expect(new S3().download('example.png')).rejects.toThrowError('Error for f:/usr/tmp')
     expect(require('node-downloader-helper').DownloaderHelper).toHaveBeenCalledWith('aws_endpoint/bucket/example.png', 'f:/usr/tmp', { override: true })
     expect(require('node-downloader-helper').DownloaderHelper.mock.instances[0].start).toHaveBeenCalledTimes(1)
   })
 
   it('should use node-downloader-helper and return filePath when no errors', async () => {
-    await expect(new S3().download('meme.png', '/root')).resolves.toEqual('filePath:/root')
+    __changePath('/root')
+    await expect(new S3().download('meme.png')).resolves.toEqual('filePath:/root')
     expect(require('node-downloader-helper').DownloaderHelper).toHaveBeenCalledWith('aws_endpoint/bucket/meme.png', '/root', { override: true })
     expect(require('node-downloader-helper').DownloaderHelper.mock.instances[0].start).toHaveBeenCalledTimes(1)
   })

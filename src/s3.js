@@ -2,6 +2,7 @@ import AWS from 'aws-sdk'
 import S3credentials from './s3_credentials.js'
 import fs from 'fs'
 import { DownloaderHelper } from 'node-downloader-helper'
+import temporaryDir from './temporary_dir'
 
 export default class {
   constructor () {
@@ -16,7 +17,8 @@ export default class {
     })
   }
 
-  async download (fullKey, folder) {
+  async download (fullKey) {
+    const folder = (await temporaryDir()).path
     return new Promise((resolve, reject) => {
       const url = `${this._credentials.endpoint}/${this._credentials.bucketName}/${fullKey}`
       const dl = new DownloaderHelper(url, folder, { override: true })
