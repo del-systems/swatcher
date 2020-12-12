@@ -52,6 +52,7 @@ const createOrUpdatePullRequestComment = async (credentials, message) => {
   let url = `${credentials.apiURL}/repos/${credentials.repo}/issues/${credentials.eventPayload.pull_request.number}/comments`
   let response = await fetch(url, { headers })
   let commentId = response.find(c => c.body.startsWith('<!--SWATCHER-->'))?.id
+
   if (!commentId) {
     const body = JSON.stringify({ body: '<!--SWATCHER-->' })
     response = await fetch(url, { headers, method: 'POST', body })
@@ -59,5 +60,5 @@ const createOrUpdatePullRequestComment = async (credentials, message) => {
   }
 
   url = `${credentials.apiURL}/repos/${credentials.repo}/issues/comments/${commentId}`
-  await fetch(url, { method: 'PATCH', headers, body: '<!--SWATCHER-->\n' + message })
+  await fetch(url, { method: 'PATCH', headers, body: JSON.stringify({ body: '<!--SWATCHER-->\n' + message }) })
 }

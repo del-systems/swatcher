@@ -54,7 +54,7 @@ export default async function () {
   body += removedPaths.reduce((accumulator, item) => accumulator + `${item.fsPath}|<img src='${s3.url(ci.baseSha + '/' + item.fullKey)}'>| _removed_ | _N/A_ \n`, '')
   body += addedPaths.reduce((accumulator, item) => accumulator + `${item.fsPath}| _not existed_ |<img src='${s3.url(ci.headSha + '/' + item.fullKey)}'> | _N/A_ \n`, '')
   body += changedPaths.reduce((accmulator, item) => accmulator + `${item.fsPath}|<img src='${s3.url(ci.baseSha + '/' + item.fullKey)}'>|<img src='${s3.url(ci.headSha + '/' + item.fullKey)}'>|<img src='${s3.url(item.diffKey)}'> \n`, '')
-  reportChanges(body)
+  await reportChanges(body)
 }
 
 const listFiles = async (s3, sha, prefix = '') => {
