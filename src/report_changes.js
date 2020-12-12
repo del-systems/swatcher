@@ -60,5 +60,5 @@ const createOrUpdatePullRequestComment = async (credentials, message) => {
   }
 
   url = `${credentials.apiURL}/repos/${credentials.repo}/issues/comments/${commentId}`
-  await fetch(url, { method: 'PATCH', headers, body: JSON.stringify({ body: '<!--SWATCHER-->\n' + message }) })
+  await fetch(url, { method: 'PATCH', headers, body: JSON.stringify({ body: '<!--SWATCHER-->\n# [Swatcher](https://github.com/del-systems/swatcher) Report\n\n' + message }) })
 }
