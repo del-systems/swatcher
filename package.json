@@ -1,6 +1,6 @@
 {
   "name": "swatcher",
-  "version": "0.0.40",
+  "version": "1.0.0",
   "description": "Screenshot Watcher",
   "main": "src/index.js",
   "scripts": {
@@ -13,8 +13,7 @@
     "tests"
   ],
   "author": "Shakhzod Ikromov <aabbcc.double@gmail.com>",
-  "license": "ISC",
-  "private": true,
+  "license": "MIT",
   "dependencies": {},
   "bin": {
     "swatcher": "dist/index.js"
