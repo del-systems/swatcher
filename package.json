@@ -1,14 +1,10 @@
 {
   "name": "swatcher",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "Screenshot Watcher",
   "main": "src/index.js",
   "scripts": {
     "test": "npx jest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bookmate/everybook-ios.git"
   },
   "keywords": [
     "screenshots",
@@ -18,22 +14,17 @@
   ],
   "author": "Shakhzod Ikromov <aabbcc.double@gmail.com>",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bookmate/everybook-ios/issues"
-  },
   "private": true,
-  "homepage": "https://github.com/bookmate/everybook-ios#readme",
-  "dependencies": {
-    "aws-sdk": "^2.807.0",
-    "commander": "^6.2.0",
-    "looks-same": "^7.2.4",
-    "node-downloader-helper": "^1.0.15",
-    "tmp-promise": "^3.0.2"
-  },
+  "dependencies": {},
   "bin": {
     "swatcher": "dist/index.js"
   },
   "devDependencies": {
+    "aws-sdk": "^2.807.0",
+    "commander": "^6.2.0",
+    "looks-same": "^7.2.4",
+    "node-downloader-helper": "^1.0.15",
+    "tmp-promise": "^3.0.2",
     "@babel/core": "^7.12.10",
     "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.10",
@@ -49,5 +40,13 @@
     "secure-json-parse": "^2.1.0",
     "webpack": "^5.10.0",
     "webpack-cli": "^4.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/del-systems/swatcher.git"
+  },
+  "bugs": {
+    "url": "https://github.com/del-systems/swatcher/issues"
+  },
+  "homepage": "https://github.com/del-systems/swatcher#readme"
 }
