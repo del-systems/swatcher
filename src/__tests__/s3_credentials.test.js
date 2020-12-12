@@ -1,10 +1,5 @@
 import S3Credentials from '../s3_credentials'
-
-const fakeEnvVariables = variables => {
-  const savedOriginal = process.env
-  process.env = variables
-  return () => { process.env = savedOriginal }
-}
+import { fakeEnv } from './test-utils'
 
 describe('Credential should prioritize some keys', () => {
   test.each([
@@ -119,7 +114,7 @@ describe('Credential should prioritize some keys', () => {
       true
     ]
   ])('`new S3Credentials().%s` from %p should return %p', (property, env, expected) => {
-    const resetFakedEnvVariables = fakeEnvVariables(env)
+    const resetFakedEnvVariables = fakeEnv(env)
 
     expect(new S3Credentials()[property]).toEqual(expected)
 

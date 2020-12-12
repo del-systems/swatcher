@@ -1,6 +1,7 @@
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: [
-    'src/**/*.js'
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    'src/__tests__/test-utils.js'
   ]
 }

@@ -1,4 +1,5 @@
 import generateDiffCommand from '../generate_diff_command'
+import reportChanges from '../report_changes'
 
 jest.mock('../ci', () => ({
   __esModule: true,
@@ -7,6 +8,8 @@ jest.mock('../ci', () => ({
     headSha: 'pull-request-sha'
   })
 }))
+
+jest.mock('../report_changes')
 
 jest.mock('../base32', () => ({
   __esModule: true,
@@ -41,6 +44,7 @@ jest.mock('../s3', () => ({
       return key
     }
     this.upload = jest.fn()
+    this.url = key => key
 
     return this
   })
@@ -56,4 +60,6 @@ jest.mock('../compare_pngs', () => ({
 
 it('should properly detect only updated screenshots and check for equalness', async () => {
   await generateDiffCommand()
+
+  expect(reportChanges).toHaveBeenCalledTimes(1)
 })
