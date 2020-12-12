@@ -1,6 +1,6 @@
 {
-  "name": "swatcher",
-  "version": "1.0.1",
+  "name": "@del-systems/swatcher",
+  "version": "1.0.2",
   "description": "Screenshot Watcher",
   "main": "src/index.js",
   "scripts": {
