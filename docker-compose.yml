@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    environment:
+      - "MINIO_ACCESS_KEY=ACCESS_KEY"
+      - "MINIO_SECRET_KEY=SECRET_KEY"
+    command: server /export
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10;
+      /usr/bin/mc config host add myminio http://minio:9000 ACCESS_KEY SECRET_KEY;
+      /usr/bin/mc rm -r --force myminio/swatcher-bucket;
+      /usr/bin/mc mb myminio/swatcher-bucket;
+      /usr/bin/mc policy set download myminio/swatcher-bucket;
+      exit 0;
+      "
