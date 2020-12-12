@@ -58,3 +58,16 @@ jobs:
       - uses: del-systems/check-if-version-bumped@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+  demo:
+    runs-on: ubuntu-latest
+    needs: [check-files, check-version, test]
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker run --entrypoint sh -v "$(realpath .):/data" buildkite/puppeteer /data/demo/render_using_catage.sh
+      - run: dist/index.js collect . && dist/index.js generate-diff
+        env:
+          SWATCHER_S3_SECRET_KEY: ${{ secrets.SWATCHER_S3_SECRET_KEY }}
+          SWATCHER_S3_REGION: ${{ secrets.SWATCHER_S3_REGION }}
+          SWATCHER_S3_BUCKET_NAME: ${{ secrets.SWATCHER_S3_BUCKET_NAME }}
+          SWATCHER_S3_ACCESS_KEY: ${{ secrets.SWATCHER_S3_ACCESS_KEY }}
+          SWATCHER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -71,7 +71,7 @@ it('should post a message when there are no errors', async () => {
   expect(nodeFetch.mock.calls).toEqual([
     ['https://api.github.com/repos/del-systems/swatcher/issues/1/comments', { headers }],
     ['https://api.github.com/repos/del-systems/swatcher/issues/1/comments', { headers, body: expect.anything(), method: 'POST' }],
-    ['https://api.github.com/repos/del-systems/swatcher/issues/comments/comment-id', { headers, body: '<!--SWATCHER-->\nThis is body', method: 'PATCH' }]
+    ['https://api.github.com/repos/del-systems/swatcher/issues/comments/comment-id', { headers, body: JSON.stringify({ body: '<!--SWATCHER-->\nThis is body' }), method: 'PATCH' }]
   ])
 
   resetEnvVariables()
