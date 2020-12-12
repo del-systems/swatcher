@@ -21,12 +21,8 @@ sleep 15
 export GITHUB_EVENT_NAME='push'
 cat <<EOF > /tmp/github_payload.json
 {
-  "sha": "masterSHA1",
-  "parents": [
-    {
-      "sha": "masterSHA0"
-    }
-  ]
+  "before": "masterSHA0",
+  "after": "masterSHA1"
 }
 EOF
 export GITHUB_EVENT_PATH='/tmp/github_payload.json'
@@ -43,11 +39,13 @@ find "$TEMP_DIR" -mindepth 1 -delete
 export GITHUB_EVENT_NAME='pull_request'
 cat <<EOF > /tmp/github_payload.json
 {
-  "base": {
-    "sha": "masterSHA1"
-  },
-  "head": {
-    "sha": "featureSHA1"
+  "pull_request": {
+    "base": {
+      "sha": "masterSHA1"
+    },
+    "head": {
+      "sha": "featureSHA1"
+    }
   }
 }
 EOF

@@ -31,7 +31,7 @@ it('should do nothing when event name isn\' pull_request', async () => {
     GITHUB_API_URL: 'https://api.github.com',
     GITHUB_EVENT_NAME: 'push'
   })
-  const resetGithubPayload = await fakedGithubPayload({ number: 1 })
+  const resetGithubPayload = await fakedGithubPayload({ pull_request: { number: 1 } })
 
   await reportChanges('This is body')
   expect(nodeFetch).toHaveBeenCalledTimes(0)
@@ -47,7 +47,7 @@ it('should fail when url request is bad', async () => {
     GITHUB_API_URL: 'https://api.github.com',
     GITHUB_EVENT_NAME: 'pull_request'
   })
-  const resetGithubPayload = await fakedGithubPayload({ number: 1 })
+  const resetGithubPayload = await fakedGithubPayload({ pull_request: { number: 1 } })
 
   await expect(reportChanges('This is body')).rejects.toEqual(expect.any(Error))
   expect(nodeFetch).toHaveBeenCalledTimes(1)
@@ -63,7 +63,7 @@ it('should post a message when there are no errors', async () => {
     GITHUB_API_URL: 'https://api.github.com',
     GITHUB_EVENT_NAME: 'pull_request'
   })
-  const resetGithubPayload = await fakedGithubPayload({ number: 1 })
+  const resetGithubPayload = await fakedGithubPayload({ pull_request: { number: 1 } })
 
   await expect(reportChanges('This is body')).resolves.toBeUndefined()
 

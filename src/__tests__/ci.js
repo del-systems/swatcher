@@ -14,25 +14,25 @@ describe('ci should read all available env variables', () => {
     [
       'baseSha',
       { GITHUB_EVENT_NAME: 'pull_request' },
-      { base: { sha: '123' }, head: { sha: '000' } },
+      { pull_request: { base: { sha: '123' }, head: { sha: '000' } } },
       '123'
     ],
     [
       'headSha',
       { GITHUB_EVENT_NAME: 'pull_request' },
-      { base: { sha: '111' }, head: { sha: '0101' } },
+      { pull_request: { base: { sha: '111' }, head: { sha: '0101' } } },
       '0101'
     ],
     [
       'headSha',
       { GITHUB_EVENT_NAME: 'push' },
-      { sha: 'bbb', parents: [{ sha: 'v' }] },
+      { after: 'bbb', before: 'va' },
       'bbb'
     ],
     [
       'baseSha',
       { GITHUB_EVENT_NAME: 'push' },
-      { sha: '12345', parents: [{ sha: 'first_parent' }, { sha: 'secondOne' }, { sha: 'third' }] },
+      { after: '12345', before: 'first_parent' },
       'first_parent'
     ]
   ])('`(await CI()).%s` from %p should return %p', async (property, env, payload, expected) => {

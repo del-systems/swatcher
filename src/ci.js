@@ -6,12 +6,12 @@ class GithubActionsEnvironment {
   constructor (githubPayload) {
     switch (process.env.GITHUB_EVENT_NAME) {
       case 'pull_request':
-        this.baseSha = githubPayload.base?.sha
-        this.headSha = githubPayload.head?.sha
+        this.baseSha = githubPayload.pull_request?.base?.sha
+        this.headSha = githubPayload.pull_request?.head?.sha
         break
       case 'push':
-        this.baseSha = githubPayload.parents[0]?.sha
-        this.headSha = githubPayload.sha
+        this.baseSha = githubPayload.before
+        this.headSha = githubPayload.after
         break
     }
 

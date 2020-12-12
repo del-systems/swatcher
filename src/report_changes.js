@@ -49,8 +49,7 @@ const createOrUpdatePullRequestComment = async (credentials, message) => {
     Authorization: `token ${credentials.token}`,
     Accept: 'application/vnd.github.v3+json'
   }
-
-  let url = `${credentials.apiURL}/repos/${credentials.repo}/issues/${credentials.eventPayload.number}/comments`
+  let url = `${credentials.apiURL}/repos/${credentials.repo}/issues/${credentials.eventPayload.pull_request.number}/comments`
   let response = await fetch(url, { headers })
   let commentId = response.find(c => c.body.startsWith('<!--SWATCHER-->'))?.id
   if (!commentId) {
