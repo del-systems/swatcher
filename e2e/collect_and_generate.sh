@@ -2,6 +2,10 @@
 
 set -exuo pipefail
 
+TEMP_DIR="/tmp/swatcher-e2e/"
+mkdir -p "$TEMP_DIR"
+find "$TEMP_DIR" -mindepth 1 -delete
+
 PROJECT_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
 
 # start minio and prepare all keys
@@ -27,7 +31,6 @@ cat <<EOF > /tmp/github_payload.json
 EOF
 export GITHUB_EVENT_PATH='/tmp/github_payload.json'
 
-TEMP_DIR="$(mktemp -d)"
 cp "${PROJECT_DIR}/e2e/fixtures/ipad-1.png" "$TEMP_DIR/ipad_home.png"
 cp "${PROJECT_DIR}/e2e/fixtures/ipad-3.png" "$TEMP_DIR/ipad_apps.png"
 "${PROJECT_DIR}/dist/index.js" collect "$TEMP_DIR"

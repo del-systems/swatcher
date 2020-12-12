@@ -17,11 +17,14 @@ export default class {
     })
   }
 
+  url (fullKey) {
+    return `${this._credentials.endpoint}/${this._credentials.bucketName}/${fullKey}`
+  }
+
   async download (fullKey) {
     const folder = (await temporaryDir()).path
     return new Promise((resolve, reject) => {
-      const url = `${this._credentials.endpoint}/${this._credentials.bucketName}/${fullKey}`
-      const dl = new DownloaderHelper(url, folder, { override: true })
+      const dl = new DownloaderHelper(this.url(fullKey), folder, { override: true })
       dl.on('end', downloadInfo => {
         resolve(downloadInfo.filePath)
       })
