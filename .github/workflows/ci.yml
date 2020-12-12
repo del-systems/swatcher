@@ -32,6 +32,11 @@ jobs:
       - run: npx gulp
       - name: check if freshly built dist folder differs from commited one
         run: git status --porcelain | tee /dev/stderr | ( ! grep -q '.' )
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: e2e/collect_and_generate.sh
   check-version:
     runs-on: ubuntu-latest
     steps:
