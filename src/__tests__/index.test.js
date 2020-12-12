@@ -8,7 +8,7 @@ jest.mock('commander', () => {
   mock.version = jest.fn().mockReturnThis()
   mock.name = jest.fn().mockReturnThis()
   mock.description = jest.fn().mockReturnThis()
-  mock.parse = jest.fn()
+  mock.parseAsync = jest.fn(async () => { throw new Error('Failed to parse') })
 
   mock.command = jest.fn(() => {
     const mock = jest.fn()
@@ -23,6 +23,9 @@ jest.mock('commander', () => {
 
 jest.mock('../collect_command', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('../generate_diff_command', () => ({ __esModule: true, default: jest.fn() }))
+
+console.error = console.log
+global.process.exit = jest.fn()
 
 it('should configure commander', () => {
   require('../index.js')
@@ -42,5 +45,5 @@ it('should configure commander', () => {
   expect(commander.command.mock.results[1].value.action).toHaveBeenCalledWith(generateDiffCommand)
   expect(commander.command.mock.results[1].value.action).toHaveBeenCalledTimes(1)
 
-  expect(commander.parse).toHaveBeenCalledTimes(1)
+  expect(commander.parseAsync).toHaveBeenCalledTimes(1)
 })
