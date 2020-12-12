@@ -23,4 +23,13 @@ commander
   .description('Generate diffs for already collected screenshots')
   .action(generateDiffCommand)
 
-commander.parse()
+async function main () {
+  try {
+    await commander.parseAsync()
+  } catch (error) {
+    console.error(error.name, error.message)
+    process.exit(1)
+  }
+}
+
+main()
