@@ -22,7 +22,7 @@ export default class {
   }
 
   get region () {
-    return readPrioritized('SWATCHER_S3_REGION', 'AWS_REGION')
+    return readPrioritized('SWATCHER_S3_REGION', 'AWS_DEFAULT_REGION', 'AWS_REGION')
   }
 
   get forcePathStyleBucket () {
