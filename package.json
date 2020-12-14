@@ -1,6 +1,6 @@
 {
   "name": "@del-systems/swatcher",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Screenshot Watcher",
   "main": "src/index.js",
   "scripts": {
@@ -17,6 +17,9 @@
   "dependencies": {},
   "bin": {
     "swatcher": "dist/index.js"
+  },
+  "directories": {
+    "man": "man/"
   },
   "devDependencies": {
     "aws-sdk": "^2.807.0",
