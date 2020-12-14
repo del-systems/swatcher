@@ -1,0 +1,150 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "SWATCHER" "1" "December 2020" "" ""
+.
+.SH "NAME"
+\fBswatcher\fR \- track user interface changes like a git history
+.
+.SH "SYNOPSIS"
+.
+.nf
+
+swatcher collect <dir> [other_dirs\.\.\.]
+swatcher generate\-diff
+.
+.fi
+.
+.SH "DESCRIPTION"
+This project aimed to collect screenshots from UI tests and store them to S3 compatible storage\. Screenshots are referenced by their name and every new one will be compared with old ones\. It will be displayed in HTML report if there any differences\. This is not screenshot or snapshot testing, this is history of the each screen\'s snapshot\.
+.
+.SH "COMMANDS"
+.
+.IP "\(bu" 4
+\fBcollect <dir> [other_dirs\.\.\.]\fR
+.
+.IP
+Collects screenshots from current build and uploads them to S3 compatible storage\. Can be called multiple times\. Usefull for distributed or matrix testing\.
+.
+.IP
+Configurtion needed\. See \fIENVIRONMENT\fR\.
+.
+.IP
+Both absolute or relative paths are supported\. Each path will be converted to absolute one and encoded into base32\. Due to limitations of POSIX path delimiter slash \fB/\fR is insterted every 255 chars\. POSIX has a limit of 255 bytes for path segment and 4096 bytes for path\. You probably want to put your screenshots into \fB/tmp/screenshots\fR to reduce byte count in your paths\. Do not forget that encoding base32 will produce about 160% more bytes than input
+.
+.IP "\(bu" 4
+\fBgenerate\-diff\fR
+.
+.IP
+Detects current build sha and previous commit\'s sha, generates lists of removed, updated and added paths\. Generates messagee and posts to Github pull request (if any)
+.
+.IP
+Configurtion needed\. See \fIENVIRONMENT\fR\.
+.
+.IP
+Path types that marked with *(asterisk) are printed to \fBstdout\fR and posted as a comment\.
+.
+.IP
+\fBremoved\fR* \- every path that was detected on previous commit but not on current one\. Considered as \fBremoved\fR\. Diff files aren\'t generated
+.
+.IP
+\fBchanged\fR \- every path that was detected both on previous commit and current one\. Considered as \fBchanged\fR, but not \fBupdated\fR\. Every screenshot will be downloaded from both commits to compare them\. If they differ, the path considered as \fBupdated\fR\.
+.
+.IP
+\fBupdated\fR* \- every path that was detected on both on previous commit and current one \fBand\fR difference is detected\.
+.
+.IP
+\fBadded\fR* \- every path that was not detected on previous commit but on current one\. Considered as \fBadded\fR\. Diff files aren\'t generated\.
+.
+.IP "" 0
+.
+.SH "OPTIONS"
+There are no options yet
+.
+.SH "ENVIRONMENT"
+All configuration is done using environment variables\. Each environment variable is read in a order that is printed here\. The first read one is used later\.
+.
+.IP "\(bu" 4
+\fBSWATCHER_S3_ACCESS_KEY\fR, \fBAWS_ACCESS_KEY_ID\fR, \fBAWS_ACCESS_KEY\fR
+.
+.IP
+Access key for S3 authenticating
+.
+.IP "\(bu" 4
+\fBSWATCHER_S3_SECRET_KEY\fR, \fBAWS_SECRET_ACCESS_KEY\fR, \fBAWS_SECRET_KEY\fR
+.
+.IP
+Secret key for S3 authenticating
+.
+.IP "\(bu" 4
+\fBSWATCHER_S3_BUCKET_NAME\fR, \fBAWS_BUCKET\fR
+.
+.IP
+Existing bucket to upload files to\. Swatcher will not attempt to create if bucket doesn\'t exist
+.
+.IP "\(bu" 4
+\fBSWATCHER_S3_REGION\fR, \fBAWS_DEFAULT_REGION\fR, \fBAWS_REGION\fR
+.
+.IP
+\fIUsing these variables will cancel endpoint related ones\fR\. When provided the endpoint is creating using the template "https://s3\.$REGION\.amazonaws\.com"
+.
+.IP "\(bu" 4
+\fBSWATCHER_S3_ENDPOINT\fR, \fBAWS_ENDPOINT\fR
+.
+.IP
+Endpoint to connect to\. Useful when using S3 compatible service\.
+.
+.IP "\(bu" 4
+\fBSWATCHER_S3_FORCE_PATH_STYLE_BUCKET\fR
+.
+.IP
+\fIOptional\fR\. By default it\'s false\. Empty value considered as \fBfalse\fR, otherwise \fBtrue\fR\. Useful when using S3 compatible service (like minio)
+.
+.IP "\(bu" 4
+\fBSWATCHER_GITHUB_API_TOKEN\fR
+.
+.IP
+Github API token (or developer\'s personal access token) to post comments
+.
+.IP "" 0
+.
+.P
+The following environment variables are present in Github Actions\. No need to set it up manually\.
+.
+.IP "\(bu" 4
+\fBGITHUB_EVENT_NAME\fR
+.
+.IP
+Event that triggered build\. Accepted only \fBpull_request\fR and \fBpush\fR
+.
+.IP "\(bu" 4
+\fBGITUHB_EVENT_PATH\fR
+.
+.IP
+Full path to github event\. Requried for detected base and head commit sha
+.
+.IP "\(bu" 4
+\fBGITHUB_REPOSITORY\fR
+.
+.IP
+Current github repository in format \fBowner/repo\fR
+.
+.IP "\(bu" 4
+\fBGITHUB_API_URL\fR
+.
+.IP
+Github API url to make commenting requests
+.
+.IP "" 0
+.
+.SH "SECURITY CONSIDERATIONS"
+To make it possible to easily post comments, every uploaded file is made as public (using object ACL)\. Make sure that you do not collect any sensitive data\.
+.
+.SH "BUGS"
+If you detect any bugs, please report it to the repository \fIhttps://github\.com/del\-systems/swatcher\fR
+.
+.SH "HISTORY"
+1\.0\.* \- Public initial release
+.
+.SH "AUTHOR"
+Shakhzod Ikromov \fIaabbcc\.double@gmail\.com\fR

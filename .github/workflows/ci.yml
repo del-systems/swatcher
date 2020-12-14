@@ -28,6 +28,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/github-script@v3
+        id: pr-files
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            if (!context.payload.pull_request) {
+              console.log('Not pull request')
+              return
+            }
+            const files = await github.paginate(github.pulls.listFiles, { owner: context.repo.owner, repo: context.repo.repo, pull_number: context.payload.pull_request.number})
+            if (!files.find(i => i.filename === 'man/swatcher.md')) return
+            console.log('found and setting output')
+            core.setOutput('is-documentation-updated', 1)
+      - run: sudo gem install bundler && bundle install
+      - run: bundle exec ronn -r man/swatcher.md
+        if: ${{ steps.pr-files.outputs.is-documentation-updated == true }}
       - run: npm ci
       - run: npx gulp
       - name: check if freshly built dist folder differs from commited one
