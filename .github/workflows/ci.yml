@@ -41,7 +41,7 @@ jobs:
             if (!files.find(i => i.filename === 'man/swatcher.md')) return
             console.log('found and setting output')
             core.setOutput('is-documentation-updated', 1)
-      - run: sudo gem install bundler && bundle install
+      - run: sudo gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)" && bundle install
       - run: bundle exec ronn -r man/swatcher.md
         if: ${{ steps.pr-files.outputs.is-documentation-updated == true }}
       - run: npm ci
