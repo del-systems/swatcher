@@ -1,6 +1,6 @@
 {
   "name": "@del-systems/swatcher",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Screenshot Watcher",
   "main": "src/index.js",
   "scripts": {
@@ -14,7 +14,6 @@
   ],
   "author": "Shakhzod Ikromov <aabbcc.double@gmail.com>",
   "license": "MIT",
-  "dependencies": {},
   "bin": {
     "swatcher": "dist/index.js"
   },
@@ -30,7 +29,7 @@
     "aws-sdk": "^2.816.0",
     "babel-jest": "^26.6.3",
     "babel-loader": "^8.2.2",
-    "commander": "^6.2.1",
+    "commander": "^7.0.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "jest": "^26.6.3",
