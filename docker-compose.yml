@@ -9,6 +9,15 @@ services:
       - "MINIO_SECRET_KEY=SECRET_KEY"
     command: server /export
 
+  gh-server:
+    image: node
+    ports:
+      - "12345:12345"
+    entrypoint: ["/bin/sh", "-c", "npm ci && npx babel-node e2e/server.js"]
+    volumes:
+      - "./:/srv/"
+    working_dir: "/srv/"
+
   createbuckets:
     image: minio/mc
     depends_on:
