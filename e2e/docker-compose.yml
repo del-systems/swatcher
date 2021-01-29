@@ -15,7 +15,7 @@ services:
       - "12345:12345"
     entrypoint: ["/bin/sh", "-c", "npm ci && npx babel-node e2e/server.js"]
     volumes:
-      - "./:/srv/"
+      - "../:/srv/"
     working_dir: "/srv/"
 
   createbuckets:

@@ -19,7 +19,7 @@ export GITHUB_REPOSITORY='e2e/repo'
 export GITHUB_API_URL='http://127.0.0.1:12345'
 
 # start our docker containers
-docker-compose -f "${PROJECT_DIR}/docker-compose.yml" up -d
+docker-compose -f "${PROJECT_DIR}/e2e/docker-compose.yml" up -d
 
 # wait until github comment api starts up
 # disable command echoing
@@ -73,5 +73,5 @@ cp "${PROJECT_DIR}/e2e/fixtures/ipad-4.png" "$TEMP_DIR/ipad_settings.png"
 
 curl -H "Authorization: token $SWATCHER_GITHUB_API_TOKEN" "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/1/comments"
 
-docker-compose -f "${PROJECT_DIR}/docker-compose.yml" down
+docker-compose -f "${PROJECT_DIR}/e2e/docker-compose.yml" down
 
