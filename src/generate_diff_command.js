@@ -3,6 +3,7 @@ import S3 from './s3'
 import { safeBase32Decode } from './base32'
 import comparePNGs from './compare_pngs'
 import reportChanges from './report_changes'
+import parallelPromise from './parallel_promise'
 
 export default async function () {
   const s3 = new S3()
@@ -15,7 +16,7 @@ export default async function () {
   const updatedPaths = headPaths.filter(item => !!basePaths.find(i => i.fsPath === item.fsPath))
 
   const changedPaths = (
-    await asyncMap(updatedPaths, async item => {
+    await parallelPromise(updatedPaths, async item => {
       let baseDownlaodedPath
       let headDownloadedPath
 
