@@ -3,6 +3,7 @@ import S3 from './s3'
 import pathLister, { getRealPath } from './path_lister'
 import isPNG from './is_png'
 import { safeBase32Encode } from './base32'
+import parallelPromise from './parallel_promise'
 
 export default async function (dir, otherDirs) {
   const s3 = new S3()
@@ -15,12 +16,10 @@ export default async function (dir, otherDirs) {
   await uploadFiles(s3, pngFiles)
 }
 
-const uploadFiles = async (s3, items) => {
-  for (const item of items) {
-    console.log(`Uploading '${item.path}' with key '${item.key}' and content-type '${item.contentType}'...`)
-    await s3.upload(item.path, item.key, item.contentType)
-  }
-}
+const uploadFiles = async (s3, items) => await parallelPromise(items, async item => {
+  console.log(`Uploading '${item.path}' with key '${item.key}' and content-type '${item.contentType}'...`)
+  await s3.upload(item.path, item.key, item.contentType)
+})
 
 const listPNGFiles = async dirs => {
   const files = (await asyncMap(dirs, async d => pathLister(d))).flat()
