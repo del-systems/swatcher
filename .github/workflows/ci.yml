@@ -79,7 +79,7 @@ jobs:
     needs: [check-files, check-version, test]
     steps:
       - uses: actions/checkout@v2
-      - run: docker run --entrypoint sh -v "$(realpath .):/data" buildkite/puppeteer:5.2.1 /data/demo/render_using_catage.sh
+      - run: docker run --entrypoint sh -v "$(realpath .):/data" buildkite/puppeteer:latest /data/demo/render_using_catage.sh
       - run: dist/index.js collect . && dist/index.js generate-diff
         env:
           SWATCHER_S3_SECRET_KEY: ${{ secrets.SWATCHER_S3_SECRET_KEY }}
