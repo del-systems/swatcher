@@ -51,10 +51,10 @@ export default async function () {
   console.log('Changed')
   console.log(changedPaths)
 
-  let body = 'Path|Before|After|Diff\n-----|-----|-----|-----\n'
-  body += removedPaths.reduce((accumulator, item) => accumulator + `${item.fsPath}|<img src='${s3.url(ci.baseSha + '/' + item.fullKey)}'>| _removed_ | _N/A_ \n`, '')
-  body += addedPaths.reduce((accumulator, item) => accumulator + `${item.fsPath}| _not existed_ |<img src='${s3.url(ci.headSha + '/' + item.fullKey)}'> | _N/A_ \n`, '')
-  body += changedPaths.reduce((accmulator, item) => accmulator + `${item.fsPath}|<img src='${s3.url(ci.baseSha + '/' + item.fullKey)}'>|<img src='${s3.url(ci.headSha + '/' + item.fullKey)}'>|<img src='${s3.url(item.diffKey)}'> \n`, '')
+  let body = 'Before|After|Diff\n-----|-----|-----\n'
+  body += removedPaths.reduce((accumulator, item) => accumulator + `<img title='${item.fsPath}' src='${s3.url(ci.baseSha + '/' + item.fullKey)}'>| _removed_ | _N/A_ \n`, '')
+  body += addedPaths.reduce((accumulator, item) => accumulator + `_not existed_ |<img title='${item.fsPath}' src='${s3.url(ci.headSha + '/' + item.fullKey)}'> | _N/A_ \n`, '')
+  body += changedPaths.reduce((accmulator, item) => accmulator + `<img title='${item.fsPath}' src='${s3.url(ci.baseSha + '/' + item.fullKey)}'>|<img title='${item.fsPath}' src='${s3.url(ci.headSha + '/' + item.fullKey)}'>|<img title='${item.fsPath}' src='${s3.url(item.diffKey)}'> \n`, '')
   await reportChanges(body)
 }
 
