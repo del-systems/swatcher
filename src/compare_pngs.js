@@ -20,13 +20,18 @@ export default async function (pngBefore, pngAfter) {
 
   const dimensions = await promisify(imageSize)(pngBefore)
   if (diffClusters.length !== 0 && areDimensionsSame(dimensions, await promisify(imageSize)(pngAfter))) {
-    handleEach(diffClusters, cluster => {
-      const indicatorHeight = (cluster.bottom - cluster.top) / pixelRatio
-      const indicatorElevation = (dimensions.height - cluster.bottom) / pixelRatio
+    dimensions.width /= pixelRatio
+    dimensions.height /= pixelRatio
 
-      if (isInRange(indicatorHeight, 4, 6) && isInRange(indicatorElevation, 7, 9)) {
-        return true
-      }
+    handleEach(diffClusters, cluster => {
+      cluster.top /= pixelRatio
+      cluster.left /= pixelRatio
+      cluster.right /= pixelRatio
+      cluster.bottom /= pixelRatio
+      cluster.width = cluster.right - cluster.left
+      cluster.height = cluster.bottom - cluster.top
+
+      return isClusterHomeIndicator(dimensions, cluster) || isClusterTextFieldCaret(dimensions, cluster)
     })
 
     if (diffClusters.length === 0) return { equal: true }
@@ -36,3 +41,11 @@ export default async function (pngBefore, pngAfter) {
   await promisify(looksSame.createDiff)({ reference: pngBefore, current: pngAfter, pixelRatio, diff: path })
   return { equal, diffPath: path }
 }
+
+const isClusterHomeIndicator = (dimensions, cluster) => (
+  isInRange(cluster.height, 4, 6) && isInRange(dimensions.height - cluster.bottom, 7, 9)
+)
+
+const isClusterTextFieldCaret = (dimensions, cluster) => (
+  isInRange(cluster.width, 0.3, 3) && isInRange(cluster.height, 15, 30)
+)
