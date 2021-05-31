@@ -1,7 +1,13 @@
 import comparePNGs from '../compare_pngs'
 import path from 'path'
 
-const DEFAULT_TIMEOUT = 60000 // in ms
+jest.mock('looks-same', () => {
+  const original = jest.requireActual('looks-same')
+  original.createDiff = jest.fn((params, callback) => callback(null))
+  return original
+})
+
+const DEFAULT_TIMEOUT = 10000 // in ms
 const fixturePath = name => path.join(__dirname, '../../e2e/fixtures', name)
 
 it('should ignore text field carets on iphone', async () => {
