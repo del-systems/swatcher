@@ -3,7 +3,7 @@ import temporaryFile, { __changeFile } from '../temporary_file'
 import comparePNGs from '../compare_pngs'
 
 jest.mock('looks-same', () => {
-  const looksSame = jest.fn((pngBefore, pngAfter, options, callback) => callback(null, { equal: pngBefore === pngAfter }))
+  const looksSame = jest.fn((pngBefore, pngAfter, options, callback) => callback(null, { equal: pngBefore === pngAfter, diffClusters: [] }))
   looksSame.createDiff = jest.fn((options, callback) => callback())
   return looksSame
 })
@@ -16,6 +16,8 @@ jest.mock('../temporary_file', () => {
     __changeFile: to => { fileReturn = to }
   }
 })
+
+jest.mock('image-size', () => jest.fn((image, callback) => callback(null, { width: 10, height: 10 })))
 
 beforeEach(jest.clearAllMocks)
 
@@ -44,7 +46,7 @@ describe('pixel ratio is properly read', () => {
 
 it('should properly call looksSame', async () => {
   await expect(comparePNGs('pngFile', 'pngFile')).resolves.toEqual({ equal: true })
-  expect(looksSame.mock.calls[0]).toEqual(['pngFile', 'pngFile', { pixelRatio: 2 }, expect.any(Function)])
+  expect(looksSame.mock.calls[0]).toEqual(['pngFile', 'pngFile', { pixelRatio: 2, shouldCluster: true }, expect.any(Function)])
 
   expect(looksSame).toHaveBeenCalledTimes(1)
 })
