@@ -46,7 +46,7 @@ describe('pixel ratio is properly read', () => {
 
 it('should properly call looksSame', async () => {
   await expect(comparePNGs('pngFile', 'pngFile')).resolves.toEqual({ equal: true })
-  expect(looksSame.mock.calls[0]).toEqual(['pngFile', 'pngFile', { pixelRatio: 2, shouldCluster: true }, expect.any(Function)])
+  expect(looksSame.mock.calls[0]).toEqual(['pngFile', 'pngFile', { pixelRatio: 2, shouldCluster: true, tolerance: 5 }, expect.any(Function)])
 
   expect(looksSame).toHaveBeenCalledTimes(1)
 })

@@ -80,6 +80,14 @@ one is used later.
 
   Github API token (or developer's personal access token) to post comments
 
+- `SWATCHER_PIXEL_RATIO`
+
+  _Optional._ By defaults it's `2`. Sets the pixel ratio of the images for better handling. Any non-number value falls back to default value.
+
+- `SWATCHER_DIFF_TOLERANCE`
+
+  _Optional_. By default it's `5`. Sets the tolerance to mark images as equal. Larger values ignore more changes. Any non-number __and zero__ value falls back to default.
+
 The following environment variables are present in Github Actions. No need to set it up manually.
 
 - `GITHUB_EVENT_NAME`
