@@ -15,7 +15,12 @@ const handleEach = (mutatedArray, handler) => {
 export default async function (pngBefore, pngAfter, outputPath) {
   const pixelRatio = Number(process.env.SWATCHER_PIXEL_RATIO) || 2
 
-  const { equal, diffClusters } = await promisify(looksSame)(pngBefore, pngAfter, { pixelRatio, shouldCluster: true })
+  const looksSameOptions = {
+    pixelRatio,
+    shouldCluster: true,
+    tolerance: Number(process.env.SWATCHER_DIFF_TOLERANCE) || 5
+  }
+  const { equal, diffClusters } = await promisify(looksSame)(pngBefore, pngAfter, looksSameOptions)
   if (equal) return { equal }
 
   const dimensions = await promisify(imageSize)(pngBefore)
