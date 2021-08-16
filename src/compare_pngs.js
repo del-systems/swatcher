@@ -12,7 +12,7 @@ const handleEach = (mutatedArray, handler) => {
   }
 }
 
-export default async function (pngBefore, pngAfter) {
+export default async function (pngBefore, pngAfter, outputPath) {
   const pixelRatio = Number(process.env.SWATCHER_PIXEL_RATIO) || 2
 
   const { equal, diffClusters } = await promisify(looksSame)(pngBefore, pngAfter, { pixelRatio, shouldCluster: true })
@@ -37,7 +37,7 @@ export default async function (pngBefore, pngAfter) {
     if (diffClusters.length === 0) return { equal: true }
   }
 
-  const { path } = await temporaryFile()
+  const path = outputPath ?? (await temporaryFile()).path
   await promisify(looksSame.createDiff)({ reference: pngBefore, current: pngAfter, pixelRatio, diff: path })
   return { equal, diffPath: path }
 }

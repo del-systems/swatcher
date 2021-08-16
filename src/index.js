@@ -2,6 +2,7 @@ import commander from 'commander'
 import swatcherVersion from '../version'
 import collectCommand from './collect_command'
 import generateDiffCommand from './generate_diff_command'
+import diffLocalCommand from './diff_local_command'
 
 commander
   .version(swatcherVersion)
@@ -24,6 +25,11 @@ commander
   .command('generate-diff')
   .description('Generate diffs for already collected screenshots')
   .action(generateDiffCommand)
+
+commander
+  .command('diff-local <A_png> <B_png> <output_png>')
+  .description('Create a diff file for locally available files')
+  .action(diffLocalCommand)
 
 async function main () {
   try {
