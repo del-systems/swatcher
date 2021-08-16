@@ -2,6 +2,7 @@ import commander from 'commander'
 import swatcherVersion from '../../version'
 import collectCommand from '../collect_command'
 import generateDiffCommand from '../generate_diff_command'
+import diffLocalCommand from '../diff_local_command'
 
 jest.mock('commander', () => {
   const mock = {}
@@ -23,6 +24,7 @@ jest.mock('commander', () => {
 
 jest.mock('../collect_command', () => ({ __esModule: true, default: jest.fn() }))
 jest.mock('../generate_diff_command', () => ({ __esModule: true, default: jest.fn() }))
+jest.mock('../diff_local_command', () => ({ __esModule: true, default: jest.fn() }))
 
 console.error = console.log
 global.process.exit = jest.fn()
@@ -33,7 +35,7 @@ it('should configure commander', () => {
   expect(commander.name).toHaveBeenCalled()
   expect(commander.description).toHaveBeenCalledTimes(1)
 
-  expect(commander.command).toHaveBeenCalledTimes(2)
+  expect(commander.command).toHaveBeenCalledTimes(3)
 
   expect(commander.command.mock.calls[0][0]).toMatch('collect')
   expect(commander.command.mock.results[0].value.description).toHaveBeenCalledTimes(1)
@@ -44,6 +46,11 @@ it('should configure commander', () => {
   expect(commander.command.mock.results[1].value.description).toHaveBeenCalledTimes(1)
   expect(commander.command.mock.results[1].value.action).toHaveBeenCalledWith(generateDiffCommand)
   expect(commander.command.mock.results[1].value.action).toHaveBeenCalledTimes(1)
+
+  expect(commander.command.mock.calls[2][0]).toMatch('diff-local')
+  expect(commander.command.mock.results[2].value.description).toHaveBeenCalledTimes(1)
+  expect(commander.command.mock.results[2].value.action).toHaveBeenCalledWith(diffLocalCommand)
+  expect(commander.command.mock.results[2].value.action).toHaveBeenCalledTimes(1)
 
   expect(commander.parseAsync).toHaveBeenCalledTimes(1)
 })
