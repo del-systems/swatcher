@@ -56,6 +56,15 @@ Path types that marked with *(asterisk) are printed to \fBstdout\fR and posted a
 .IP
 \fBadded\fR* \- every path that was not detected on previous commit but on current one\. Considered as \fBadded\fR\. Diff files aren\'t generated\.
 .
+.IP "\(bu" 4
+\fBdiff\-local <screenshot A> <screenshot B> <output>\fR
+.
+.IP
+Compares two local PNG files and creates diff file if they aren\'t equal\. Useful when tuning up tolerance parameter or investigating some edge cases\. \fBDoesn\'t make any network requests\fR\. No GitHub Actions event payload nor S3 configuration is neeeded\.
+.
+.IP
+Be aware, that this command exits with code \fB2\fR when comparision results them equal\. Also, when files equal, file isn\'t touched\.
+.
 .IP "" 0
 .
 .SH "OPTIONS"

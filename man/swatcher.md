@@ -43,6 +43,13 @@ snapshot testing, this is history of the each screen's snapshot.
 
   **added**\* - every path that was not detected on previous commit but on current one. Considered as **added**. Diff files aren't generated.
 
+- `diff-local <screenshot A> <screenshot B> <output>`
+
+  Compares two local PNG files and creates diff file if they aren't equal. Useful when tuning up tolerance parameter or investigating some
+  edge cases. __Doesn't make any network requests__. No GitHub Actions event payload nor S3 configuration is neeeded.
+
+  Be aware, that this command exits with code `2` when comparision results them equal. Also, when files equal, file isn't touched.
+
 ## OPTIONS
 There are no options yet
 
