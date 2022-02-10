@@ -39,7 +39,7 @@
     "jest": "^27.0.3",
     "looks-same": "^7.2.4",
     "node-downloader-helper": "^1.0.15",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "rfc4648": "^1.4.0",
     "secure-json-parse": "^2.1.0",
     "tmp-promise": "^3.0.2",
