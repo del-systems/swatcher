@@ -21,9 +21,10 @@ jobs:
       - uses: actions/checkout@v2
       - run: rm -rf dist
         name: remove dist folder before running linter
-      - uses: github/super-linter@v3
+      - uses: github/super-linter@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_GITHUB_ACTIONS: 'false' # due to not recognizing of core.setOutput
   check-files:
     runs-on: ubuntu-latest
     steps:

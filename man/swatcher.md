@@ -28,7 +28,7 @@ snapshot testing, this is history of the each screen's snapshot.
 - `generate-diff`
 
   Detects current build sha and previous commit's sha, generates lists of removed, updated and added paths. Generates messagee and posts to
-  Github pull request (if any)
+  GitHub pull request (if any)
 
   Configurtion needed. See [ENVIRONMENT][].
 
@@ -85,7 +85,7 @@ one is used later.
 
 - `SWATCHER_GITHUB_API_TOKEN`
 
-  Github API token (or developer's personal access token) to post comments
+  GitHub API token (or developer's personal access token) to post comments
 
 - `SWATCHER_PIXEL_RATIO`
 
@@ -95,7 +95,7 @@ one is used later.
 
   _Optional_. By default it's `5`. Sets the tolerance to mark images as equal. Larger values ignore more changes. Any non-number __and zero__ value falls back to default.
 
-The following environment variables are present in Github Actions. No need to set it up manually.
+The following environment variables are present in GitHub Actions. No need to set it up manually.
 
 - `GITHUB_EVENT_NAME`
 
@@ -103,15 +103,15 @@ The following environment variables are present in Github Actions. No need to se
 
 - `GITUHB_EVENT_PATH`
 
-  Full path to github event. Requried for detected base and head commit sha
+  Full path to GitHub event. Requried for detected base and head commit sha
 
 - `GITHUB_REPOSITORY`
 
-  Current github repository in format `owner/repo`
+  Current GitHub repository in format `owner/repo`
 
 - `GITHUB_API_URL`
 
-  Github API url to make commenting requests
+  GitHub API URL to make commenting requests
 
 ## SECURITY CONSIDERATIONS
 To make it possible to easily post comments, every uploaded file is made as public (using object ACL). Make sure that you do not collect
