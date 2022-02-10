@@ -1,7 +1,7 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "SWATCHER" "1" "August 2021" "" ""
+.TH "SWATCHER" "1" "February 2022" "" ""
 .
 .SH "NAME"
 \fBswatcher\fR \- track user interface changes like a git history
@@ -36,7 +36,7 @@ Both absolute or relative paths are supported\. Each path will be converted to a
 \fBgenerate\-diff\fR
 .
 .IP
-Detects current build sha and previous commit\'s sha, generates lists of removed, updated and added paths\. Generates messagee and posts to Github pull request (if any)
+Detects current build sha and previous commit\'s sha, generates lists of removed, updated and added paths\. Generates messagee and posts to GitHub pull request (if any)
 .
 .IP
 Configurtion needed\. See \fIENVIRONMENT\fR\.
@@ -113,7 +113,7 @@ Endpoint to connect to\. Useful when using S3 compatible service\.
 \fBSWATCHER_GITHUB_API_TOKEN\fR
 .
 .IP
-Github API token (or developer\'s personal access token) to post comments
+GitHub API token (or developer\'s personal access token) to post comments
 .
 .IP "\(bu" 4
 \fBSWATCHER_PIXEL_RATIO\fR
@@ -130,7 +130,7 @@ Github API token (or developer\'s personal access token) to post comments
 .IP "" 0
 .
 .P
-The following environment variables are present in Github Actions\. No need to set it up manually\.
+The following environment variables are present in GitHub Actions\. No need to set it up manually\.
 .
 .IP "\(bu" 4
 \fBGITHUB_EVENT_NAME\fR
@@ -142,19 +142,19 @@ Event that triggered build\. Accepted only \fBpull_request\fR and \fBpush\fR
 \fBGITUHB_EVENT_PATH\fR
 .
 .IP
-Full path to github event\. Requried for detected base and head commit sha
+Full path to GitHub event\. Requried for detected base and head commit sha
 .
 .IP "\(bu" 4
 \fBGITHUB_REPOSITORY\fR
 .
 .IP
-Current github repository in format \fBowner/repo\fR
+Current GitHub repository in format \fBowner/repo\fR
 .
 .IP "\(bu" 4
 \fBGITHUB_API_URL\fR
 .
 .IP
-Github API url to make commenting requests
+GitHub API URL to make commenting requests
 .
 .IP "" 0
 .
