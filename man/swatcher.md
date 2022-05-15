@@ -46,7 +46,7 @@ snapshot testing, this is history of the each screen's snapshot.
 - `diff-local <screenshot A> <screenshot B> <output>`
 
   Compares two local PNG files and creates diff file if they aren't equal. Useful when tuning up tolerance parameter or investigating some
-  edge cases. __Doesn't make any network requests__. No GitHub Actions event payload nor S3 configuration is neeeded.
+  edge cases. **Doesn't make any network requests**. No GitHub Actions event payload nor S3 configuration is neeeded.
 
   Be aware, that this command exits with code `2` when comparision results them equal. Also, when files equal, file isn't touched.
 
@@ -93,7 +93,7 @@ one is used later.
 
 - `SWATCHER_DIFF_TOLERANCE`
 
-  _Optional_. By default it's `5`. Sets the tolerance to mark images as equal. Larger values ignore more changes. Any non-number __and zero__ value falls back to default.
+  _Optional_. By default it's `5`. Sets the tolerance to mark images as equal. Larger values ignore more changes. Any non-number **and zero** value falls back to default.
 
 The following environment variables are present in GitHub Actions. No need to set it up manually.
 
