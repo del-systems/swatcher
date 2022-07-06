@@ -9,6 +9,11 @@ export default async function () {
   const s3 = new S3()
   const ci = await CI()
 
+  if (!ci.baseSha) {
+    console.warn('Cannot generate diffs when base SHA isn\'t available')
+    return
+  }
+
   const headPaths = await listFiles(s3, ci.headSha)
   const basePaths = await listFiles(s3, ci.baseSha)
   const addedPaths = headPaths.filter(item => !basePaths.find(i => i.fsPath === item.fsPath))

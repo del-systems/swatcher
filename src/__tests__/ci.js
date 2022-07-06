@@ -34,6 +34,18 @@ describe('ci should read all available env variables', () => {
       { GITHUB_EVENT_NAME: 'push' },
       { after: '12345', before: 'first_parent' },
       'first_parent'
+    ],
+    [
+      'headSha',
+      { GITHUB_EVENT_NAME: 'workflow_dispatch', GITHUB_SHA: 'work sha' },
+      { },
+      'work sha'
+    ],
+    [
+      'baseSha',
+      { GITHUB_EVENT_NAME: 'workflow_dispatch', GITHUB_SHA: 'work sha' },
+      { },
+      undefined
     ]
   ])('`(await CI()).%s` from %p should return %p', async (property, env, payload, expected) => {
     const resetFakedEnvVariables = fakeEnv(env)

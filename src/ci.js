@@ -13,9 +13,11 @@ class GithubActionsEnvironment {
         this.baseSha = githubPayload.before
         this.headSha = githubPayload.after
         break
+      case 'workflow_dispatch':
+        this.headSha = process.env.GITHUB_SHA
     }
 
-    if (!this.baseSha || !this.headSha) throw new Error('Base sha and head sha couldn\'t be resolved')
+    if (!this.baseSha && !this.headSha) throw new Error('Base sha and head sha couldn\'t be resolved')
   }
 }
 

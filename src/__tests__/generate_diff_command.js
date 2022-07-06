@@ -1,13 +1,21 @@
 import generateDiffCommand from '../generate_diff_command'
 import reportChanges from '../report_changes'
 
-jest.mock('../ci', () => ({
-  __esModule: true,
-  default: async () => ({
-    baseSha: 'parent-sha',
-    headSha: 'pull-request-sha'
+const ci = require('../ci')
+jest.mock('../ci', () => {
+  const module = {
+    __esModule: true,
+    __baseSha: '',
+    __headSha: ''
+  }
+
+  module.default = async () => ({
+    baseSha: module.__baseSha,
+    headSha: module.__headSha
   })
-}))
+
+  return module
+})
 
 jest.mock('../report_changes')
 
@@ -58,8 +66,21 @@ jest.mock('../compare_pngs', () => ({
   }))
 }))
 
+beforeEach(jest.clearAllMocks)
+
 it('should properly detect only updated screenshots and check for equalness', async () => {
+  ci.__baseSha = 'parent-sha'
+  ci.__headSha = 'pull-request-sha'
   await generateDiffCommand()
 
   expect(reportChanges).toHaveBeenCalledTimes(1)
+})
+
+it('should abort if base SHA cannot be detected', async () => {
+  ci.__baseSha = null
+  ci.__headSha = 'pull-request-sha'
+
+  await generateDiffCommand()
+
+  expect(reportChanges).not.toHaveBeenCalled()
 })
