@@ -18,7 +18,7 @@ snapshot testing, this is history of the each screen's snapshot.
   Collects screenshots from current build and uploads them to S3 compatible storage. Can be called multiple times. Usefull for distributed
   or matrix testing.
 
-  Configurtion needed. See [ENVIRONMENT][].
+  Configurtion needed. See [ENVIRONMENT](#environment).
 
   Both absolute or relative paths are supported. Each
   path will be converted to absolute one and encoded into base32. Due to limitations of POSIX path delimiter slash `/` is insterted every
@@ -30,7 +30,7 @@ snapshot testing, this is history of the each screen's snapshot.
   Detects current build sha and previous commit's sha, generates lists of removed, updated and added paths. Generates messagee and posts to
   GitHub pull request (if any)
 
-  Configurtion needed. See [ENVIRONMENT][].
+  Configurtion needed. See [ENVIRONMENT](#environment).
 
   Path types that marked with \*(asterisk) are printed to `stdout` and posted as a comment.
 
