@@ -2,23 +2,42 @@
   "name": "@del-systems/swatcher",
   "version": "1.4.0",
   "description": "Screenshot Watcher",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "npx jest"
-  },
   "keywords": [
     "screenshots",
     "ios",
     "ui",
     "tests"
   ],
-  "author": "Shakhzod Ikromov <aabbcc.double@gmail.com>",
+  "homepage": "https://github.com/del-systems/swatcher#readme",
+  "bugs": {
+    "url": "https://github.com/del-systems/swatcher/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/del-systems/swatcher.git"
+  },
   "license": "MIT",
+  "author": "Shakhzod Ikromov <aabbcc.double@gmail.com>",
+  "main": "src/index.js",
   "bin": {
     "swatcher": "dist/index.js"
   },
   "directories": {
     "man": "man/"
+  },
+  "scripts": {
+    "test": "npx jest"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.816.0",
+    "commander": "^9.0.0",
+    "image-size": "^1.0.0",
+    "looks-same": "^7.2.4",
+    "node-downloader-helper": "^2.1.1",
+    "node-fetch": "^2.6.7",
+    "rfc4648": "^1.4.0",
+    "secure-json-parse": "^2.1.0",
+    "tmp-promise": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -30,30 +49,13 @@
     "@rollup/plugin-commonjs": "^23.0.2",
     "@rollup/plugin-json": "^5.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "aws-sdk": "^2.816.0",
     "babel-jest": "^28.1.0",
     "babel-loader": "^8.2.2",
     "body-parser": "^1.19.0",
-    "commander": "^9.0.0",
     "express": "^4.17.1",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
-    "image-size": "^1.0.0",
     "jest": "^28.1.0",
-    "looks-same": "^7.2.4",
-    "node-downloader-helper": "^2.1.1",
-    "node-fetch": "^2.6.7",
-    "rfc4648": "^1.4.0",
-    "rollup": "^3.4.0",
-    "secure-json-parse": "^2.1.0",
-    "tmp-promise": "^3.0.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/del-systems/swatcher.git"
-  },
-  "bugs": {
-    "url": "https://github.com/del-systems/swatcher/issues"
-  },
-  "homepage": "https://github.com/del-systems/swatcher#readme"
+    "rollup": "^3.4.0"
+  }
 }
