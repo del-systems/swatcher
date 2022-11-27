@@ -42,4 +42,4 @@ app.patch('/repos/e2e/repo/issues/comments/:id', (req, res) => {
   res.send({})
 })
 
-setTimeout(() => app.listen(12345), 10000)
+setTimeout(() => app.listen(12345), 15000)

@@ -24,7 +24,7 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      sleep 10;
+      sleep 15;
       /usr/bin/mc config host add myminio http://minio:9000 ACCESS_KEY SECRET_KEY;
       /usr/bin/mc rm -r --force myminio/swatcher-bucket;
       /usr/bin/mc mb myminio/swatcher-bucket;
