@@ -26,7 +26,7 @@ docker-compose -f "${PROJECT_DIR}/e2e/docker-compose.yml" up -d
 set +x
 printf '%s' 'Waiting server.js to be ready:'
 while ! curl --fail http://127.0.0.1:12345/health-check > /dev/null 2>&1 ; do
-  printf '%s' '.'
+  echo '.'
   sleep 1
 done
 echo 'ok'
