@@ -13,7 +13,7 @@ services:
     image: node
     ports:
       - "12345:12345"
-    entrypoint: ["/bin/sh", "-c", "npm ci && npx babel-node e2e/server.js"]
+    entrypoint: ["/bin/sh", "-c", "npm install && npx babel-node e2e/server.js"]
     volumes:
       - "../:/srv/"
     working_dir: "/srv/"
@@ -24,10 +24,10 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      sleep 10;
+      sleep 15;
       /usr/bin/mc config host add myminio http://minio:9000 ACCESS_KEY SECRET_KEY;
       /usr/bin/mc rm -r --force myminio/swatcher-bucket;
       /usr/bin/mc mb myminio/swatcher-bucket;
-      /usr/bin/mc policy set download myminio/swatcher-bucket;
+      /usr/bin/mc anonymous set download myminio/swatcher-bucket;
       exit 0;
       "

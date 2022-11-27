@@ -20,19 +20,16 @@ it('should process in parallel while stopping at first failure', async () => {
 
 it('should wait as much as possible', async () => {
   const handler = jest.fn(i => new Promise(resolve => setTimeout(resolve, i, i)))
-  const pendingResults = parallelPromise([10, 20, 30, 40, 50, 60, 70, 80], handler)
+  const pendingResults = parallelPromise([100, 200, 300, 400, 500, 600, 700, 800], handler)
 
   const cpuCount = os.cpus().length
   expect(handler).toHaveBeenCalledTimes(cpuCount)
 
-  // next batch shouldn't start before finishing pending ones
-  setTimeout(() => expect(handler).toHaveBeenCalledTimes(cpuCount), 25)
+  // next batch shouldn't start before finishing pending onesa
+  setTimeout(() => expect(handler).toHaveBeenCalledTimes(cpuCount), 250)
 
   // next batch should start after finishing previous one
-  setTimeout(() => expect(handler).toHaveBeenCalledTimes(cpuCount * 2), 35)
+  setTimeout(() => expect(handler).toHaveBeenCalledTimes(cpuCount * 2), 350)
 
-  // now last portion should executed
-  setTimeout(() => expect(handler).toHaveBeenCalledTimes(8), 30 + 65)
-
-  await expect(pendingResults).resolves.toEqual([10, 20, 30, 40, 50, 60, 70, 80])
+  await expect(pendingResults).resolves.toEqual([100, 200, 300, 400, 500, 600, 700, 800])
 })
