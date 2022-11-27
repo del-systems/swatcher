@@ -19,7 +19,6 @@ it('should process in parallel while stopping at first failure', async () => {
 })
 
 it('should wait as much as possible', async () => {
-
   const handler = jest.fn(i => new Promise(resolve => setTimeout(resolve, i, i)))
   const pendingResults = parallelPromise([100, 200, 300, 400, 500, 600, 700, 800], handler)
 
