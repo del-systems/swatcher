@@ -15,7 +15,7 @@ var looksSame = require('looks-same');
 var imageSize = require('image-size');
 var nodeFetch = require('node-fetch');
 
-var swatcherVersion = '1.4.1';
+var swatcherVersion = '1.4.2';
 
 class GithubActionsEnvironment {
   constructor (githubPayload) {
