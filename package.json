@@ -1,6 +1,6 @@
 {
   "name": "@del-systems/swatcher",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Screenshot Watcher",
   "keywords": [
     "screenshots",
@@ -29,7 +29,7 @@
     "test": "npx jest"
   },
   "dependencies": {
-    "aws-sdk": "^2.816.0",
+    "@aws-sdk/client-s3": "^3.223.0",
     "commander": "^9.0.0",
     "image-size": "^1.0.0",
     "looks-same": "^7.2.4",
