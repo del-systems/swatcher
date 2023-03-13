@@ -4,6 +4,7 @@ import { safeBase32Decode } from './base32'
 import comparePNGs from './compare_pngs'
 import reportChanges from './report_changes'
 import parallelPromise from './parallel_promise'
+import readPixelRatioFromPath from './read_pixel_ratio_from_path'
 
 export default async function () {
   const s3 = new S3()
@@ -33,7 +34,8 @@ export default async function () {
         return null
       }
 
-      const { equal, diffPath } = await comparePNGs(baseDownlaodedPath, headDownloadedPath)
+      const filePixelRatio = readPixelRatioFromPath(item.fsPath)
+      const { equal, diffPath } = await comparePNGs(baseDownlaodedPath, headDownloadedPath, null, filePixelRatio)
       if (equal || !diffPath) return null
 
       const diffKey = `${ci.baseSha}-${ci.headSha}/${item.fullKey}`

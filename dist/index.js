@@ -15,7 +15,7 @@ var looksSame = require('looks-same');
 var imageSize = require('image-size');
 var nodeFetch = require('node-fetch');
 
-var swatcherVersion = '1.4.3';
+var swatcherVersion = '1.4.4';
 
 class GithubActionsEnvironment {
   constructor (githubPayload) {
@@ -339,6 +339,7 @@ var temporaryFile = async () => {
 
 const isInRange = (x, b, t) => x >= b && x <= t;
 const areDimensionsSame = (x, y) => x.width === y.width && x.height === y.height;
+
 const handleEach = (mutatedArray, handler) => {
   for (let i = 0, l = mutatedArray.length; i < l; i++) {
     const element = mutatedArray.shift();
@@ -346,8 +347,8 @@ const handleEach = (mutatedArray, handler) => {
   }
 };
 
-async function comparePNGs (pngBefore, pngAfter, outputPath) {
-  const pixelRatio = Number(process.env.SWATCHER_PIXEL_RATIO) || 2;
+async function comparePNGs (pngBefore, pngAfter, outputPath, filePixelRatio) {
+  const pixelRatio = Number(filePixelRatio) || Number(process.env.SWATCHER_PIXEL_RATIO) || 2;
 
   const looksSameOptions = {
     pixelRatio,
@@ -370,7 +371,14 @@ async function comparePNGs (pngBefore, pngAfter, outputPath) {
       cluster.width = cluster.right - cluster.left;
       cluster.height = cluster.bottom - cluster.top;
 
-      return isClusterHomeIndicator(dimensions, cluster) || isClusterTextFieldCaret(dimensions, cluster)
+      return [
+        isClusterHomeIndicator(dimensions, cluster),
+        isClusterTextFieldCaret(dimensions, cluster),
+        isIpadStatusBarTime(dimensions, cluster),
+        isIpadStatusBarBattery(dimensions, cluster),
+        isPhoneStatusBarTime(dimensions, cluster),
+        isPhoneStatusBarBattery(dimensions, cluster)
+      ].reduce((previous, current) => previous || current, false)
     });
 
     if (diffClusters.length === 0) return { equal: true }
@@ -381,12 +389,69 @@ async function comparePNGs (pngBefore, pngAfter, outputPath) {
   return { equal, diffPath: path }
 }
 
+const doesClusterContains = (bigger, smaller) => (
+  [
+    isInRange(smaller.left, bigger.left, bigger.right),
+    isInRange(smaller.top, bigger.top, bigger.bottom),
+    isInRange(smaller.right, bigger.left, bigger.right),
+    isInRange(smaller.bottom, bigger.top, bigger.bottom)
+  ].reduce((previous, current) => previous && current, true)
+);
+
 const isClusterHomeIndicator = (dimensions, cluster) => (
   isInRange(cluster.height, 4, 6) && isInRange(dimensions.height - cluster.bottom, 7, 9)
 );
 
 const isClusterTextFieldCaret = (dimensions, cluster) => (
   isInRange(cluster.width, 0.3, 3) && isInRange(cluster.height, 15, 30)
+);
+
+const isIpadStatusBarTime = (dimensions, cluster) => (
+  doesClusterContains(
+    {
+      left: 0,
+      top: 0,
+      right: 200,
+      bottom: 20
+    },
+    cluster
+  )
+);
+
+const isIpadStatusBarBattery = (dimensions, cluster) => (
+  doesClusterContains(
+    {
+      left: dimensions.width - 110,
+      top: 0,
+      right: dimensions.width,
+      bottom: 20
+    },
+    cluster
+  )
+);
+
+const isPhoneStatusBarTime = (dimensions, cluster) => (
+  doesClusterContains(
+    {
+      left: 0,
+      top: 0,
+      right: 90,
+      bottom: 40
+    },
+    cluster
+  )
+);
+
+const isPhoneStatusBarBattery = (dimensions, cluster) => (
+  doesClusterContains(
+    {
+      left: dimensions.width - 110,
+      top: 0,
+      right: dimensions.width,
+      bottom: 40
+    },
+    cluster
+  )
 );
 
 const fetch = async (url, options) => {
@@ -449,6 +514,12 @@ const createOrUpdatePullRequestComment = async (credentials, message) => {
   await fetch(url, { method: 'PATCH', headers, body: JSON.stringify({ body: '<!--SWATCHER-->\n# [Swatcher](https://github.com/del-systems/swatcher) Report\n\n' + message }) });
 };
 
+function readPixelRatioFromPath (path) {
+  const re = /pixel_ratio_(\d+)/i;
+  const result = re.exec(path);
+  return Number(result?.at(1))
+}
+
 async function generateDiffCommand () {
   const s3 = new S3();
   const ci = await CI();
@@ -477,7 +548,8 @@ async function generateDiffCommand () {
         return null
       }
 
-      const { equal, diffPath } = await comparePNGs(baseDownlaodedPath, headDownloadedPath);
+      const filePixelRatio = readPixelRatioFromPath(item.fsPath);
+      const { equal, diffPath } = await comparePNGs(baseDownlaodedPath, headDownloadedPath, null, filePixelRatio);
       if (equal || !diffPath) return null
 
       const diffKey = `${ci.baseSha}-${ci.headSha}/${item.fullKey}`;
@@ -529,7 +601,7 @@ var diffLocalCommand = async (fileA, fileB, outputFile) => {
   await checkFile(fileA);
   await checkFile(fileB);
 
-  const { equal } = await comparePNGs(fileA, fileB, pathModule.join(outputFile, fileName));
+  const { equal } = await comparePNGs(fileA, fileB, pathModule.join(outputFile, fileName), readPixelRatioFromPath(fileA));
   if (equal) {
     console.warn('Comparing equal files, exiting with code 2');
     process.exit(2);
