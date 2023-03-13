@@ -28,7 +28,7 @@ it('should fail if files aren\'t PNGs', async () => {
 })
 
 it('should exit with code 2 when files are equal', async () => {
-  await expect(diffLocalCommand('/tmp/file.png', '/tmp/file.png', '/tmp/output.png')).resolves.toBeUndefined()
+  await expect(diffLocalCommand('/tmp/file_pixel_ratio_3.png', '/tmp/file_pixel_ratio_3.png', '/tmp/output.png')).resolves.toBeUndefined()
   expect(global.process.exit).toHaveBeenCalledWith(2)
-  expect(comparePNGs).toHaveBeenCalledWith('/tmp/file.png', '/tmp/file.png', '/tmp/output.png')
+  expect(comparePNGs).toHaveBeenCalledWith('/tmp/file_pixel_ratio_3.png', '/tmp/file_pixel_ratio_3.png', '/tmp/output.png', 3)
 })
