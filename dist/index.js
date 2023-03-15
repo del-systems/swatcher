@@ -15,7 +15,7 @@ var looksSame = require('looks-same');
 var imageSize = require('image-size');
 var nodeFetch = require('node-fetch');
 
-var swatcherVersion = '1.4.4';
+var swatcherVersion = '1.5.0';
 
 class GithubActionsEnvironment {
   constructor (githubPayload) {
@@ -330,8 +330,8 @@ const listPNGFiles = async dirs => {
 
 const asyncMap$1 = async (array, closure) => await Promise.all(array.map(closure));
 
-var temporaryFile = async () => {
-  const { fd, path, cleanup } = await tmpPromise.file();
+var temporaryFile = async postfix => {
+  const { fd, path, cleanup } = await tmpPromise.file({ postfix });
   await util.promisify(fs.close)(fd); // we dont need file descriptor
 
   return { path, cleanup }
@@ -355,7 +355,7 @@ async function comparePNGs (pngBefore, pngAfter, outputPath, filePixelRatio) {
     shouldCluster: true,
     tolerance: Number(process.env.SWATCHER_DIFF_TOLERANCE) || 5
   };
-  const { equal, diffClusters } = await util.promisify(looksSame)(pngBefore, pngAfter, looksSameOptions);
+  const { equal, diffClusters } = await looksSame(pngBefore, pngAfter, looksSameOptions);
   if (equal) return { equal }
 
   const dimensions = await util.promisify(imageSize)(pngBefore);
@@ -384,8 +384,8 @@ async function comparePNGs (pngBefore, pngAfter, outputPath, filePixelRatio) {
     if (diffClusters.length === 0) return { equal: true }
   }
 
-  const path = outputPath ?? (await temporaryFile()).path;
-  await util.promisify(looksSame.createDiff)({ reference: pngBefore, current: pngAfter, pixelRatio, diff: path });
+  const path = outputPath ?? (await temporaryFile('.png')).path;
+  await looksSame.createDiff({ reference: pngBefore, current: pngAfter, pixelRatio, diff: path });
   return { equal, diffPath: path }
 }
 
