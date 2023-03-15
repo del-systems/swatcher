@@ -21,7 +21,7 @@ export default async function (pngBefore, pngAfter, outputPath, filePixelRatio) 
     shouldCluster: true,
     tolerance: Number(process.env.SWATCHER_DIFF_TOLERANCE) || 5
   }
-  const { equal, diffClusters } = await promisify(looksSame)(pngBefore, pngAfter, looksSameOptions)
+  const { equal, diffClusters } = await looksSame(pngBefore, pngAfter, looksSameOptions)
   if (equal) return { equal }
 
   const dimensions = await promisify(imageSize)(pngBefore)
@@ -50,8 +50,8 @@ export default async function (pngBefore, pngAfter, outputPath, filePixelRatio) 
     if (diffClusters.length === 0) return { equal: true }
   }
 
-  const path = outputPath ?? (await temporaryFile()).path
-  await promisify(looksSame.createDiff)({ reference: pngBefore, current: pngAfter, pixelRatio, diff: path })
+  const path = outputPath ?? (await temporaryFile('.png')).path
+  await looksSame.createDiff({ reference: pngBefore, current: pngAfter, pixelRatio, diff: path })
   return { equal, diffPath: path }
 }
 

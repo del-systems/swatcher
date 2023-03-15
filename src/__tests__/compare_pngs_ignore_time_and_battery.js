@@ -3,7 +3,7 @@ import path from 'path'
 
 jest.mock('looks-same', () => {
   const original = jest.requireActual('looks-same')
-  original.createDiff = jest.fn((params, callback) => callback(null))
+  original.createDiff = jest.fn()
   return original
 })
 

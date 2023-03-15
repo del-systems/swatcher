@@ -3,8 +3,8 @@ import temporaryFile, { __changeFile } from '../temporary_file'
 import comparePNGs from '../compare_pngs'
 
 jest.mock('looks-same', () => {
-  const looksSame = jest.fn((pngBefore, pngAfter, options, callback) => callback(null, { equal: pngBefore === pngAfter, diffClusters: [] }))
-  looksSame.createDiff = jest.fn((options, callback) => callback())
+  const looksSame = jest.fn((pngBefore, pngAfter, options) => ({ equal: pngBefore === pngAfter, diffClusters: [] }))
+  looksSame.createDiff = jest.fn()
   return looksSame
 })
 
@@ -46,7 +46,7 @@ describe('pixel ratio is properly read', () => {
 
 it('should properly call looksSame', async () => {
   await expect(comparePNGs('pngFile', 'pngFile')).resolves.toEqual({ equal: true })
-  expect(looksSame.mock.calls[0]).toEqual(['pngFile', 'pngFile', { pixelRatio: 2, shouldCluster: true, tolerance: 5 }, expect.any(Function)])
+  expect(looksSame.mock.calls[0]).toEqual(['pngFile', 'pngFile', { pixelRatio: 2, shouldCluster: true, tolerance: 5 }])
 
   expect(looksSame).toHaveBeenCalledTimes(1)
 })
@@ -58,7 +58,7 @@ describe('it should create a temporary file when looksSame return false', () => 
     await expect(comparePNGs('a', 'b')).resolves.toEqual({ equal: false, diffPath: 'p' })
     expect(temporaryFile).toHaveBeenCalledTimes(1)
     expect(looksSame.createDiff).toHaveBeenCalledTimes(1)
-    expect(looksSame.createDiff).toHaveBeenCalledWith({ reference: 'a', current: 'b', pixelRatio: 2, diff: 'p' }, expect.any(Function))
+    expect(looksSame.createDiff).toHaveBeenCalledWith({ reference: 'a', current: 'b', pixelRatio: 2, diff: 'p' })
   })
 
   it('shouldn\'t close file descriptor when it\'s zero', async () => {
