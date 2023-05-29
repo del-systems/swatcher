@@ -1,21 +1,19 @@
 #!/usr/bin/env node
-'use strict';
+import { program } from 'commander';
+import sjson from 'secure-json-parse';
+import fs from 'fs';
+import { promisify } from 'util';
+import { S3Client, ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
+import { DownloaderHelper } from 'node-downloader-helper';
+import tmpPromise from 'tmp-promise';
+import pathModule from 'path';
+import { base32 } from 'rfc4648';
+import os from 'os';
+import looksSame from 'looks-same';
+import imageSize from 'image-size';
+import nodeFetch from 'node-fetch';
 
-var commander = require('commander');
-var sjson = require('secure-json-parse');
-var fs = require('fs');
-var util = require('util');
-var clientS3 = require('@aws-sdk/client-s3');
-var nodeDownloaderHelper = require('node-downloader-helper');
-var tmpPromise = require('tmp-promise');
-var pathModule = require('path');
-var rfc4648 = require('rfc4648');
-var os = require('os');
-var looksSame = require('looks-same');
-var imageSize = require('image-size');
-var nodeFetch = require('node-fetch');
-
-var swatcherVersion = '1.5.1';
+var swatcherVersion = '1.6.0';
 
 class GithubActionsEnvironment {
   constructor (githubPayload) {
@@ -44,7 +42,7 @@ async function CI () {
   const eventPath = process.env.GITHUB_EVENT_PATH;
   if (!eventPath) throw new Error('process.env.GITHUB_EVENT_PATH returned falsy value')
 
-  const payload = sjson.parse(await util.promisify(fs.readFile)(eventPath, 'utf8'));
+  const payload = sjson.parse(await promisify(fs.readFile)(eventPath, 'utf8'));
   return new GithubActionsEnvironment(payload)
 }
 
@@ -91,7 +89,7 @@ class S3 {
     this._credentials = new S3credentials();
     if (!this._credentials.isConfigReady) throw new Error('S3 config isn\'t ready')
 
-    this._awsS3 = new clientS3.S3Client({
+    this._awsS3 = new S3Client({
       credentials: {
         accessKeyId: this._credentials.accessKey,
         secretAccessKey: this._credentials.secretKey
@@ -109,7 +107,7 @@ class S3 {
   async download (fullKey) {
     const folder = (await temporaryDir()).path;
     return new Promise((resolve, reject) => {
-      const dl = new nodeDownloaderHelper.DownloaderHelper(this.url(fullKey), folder, { override: true });
+      const dl = new DownloaderHelper(this.url(fullKey), folder, { override: true });
       dl.on('end', downloadInfo => {
         resolve(downloadInfo.filePath);
       });
@@ -119,7 +117,7 @@ class S3 {
   }
 
   async _paginatedList (prefix, nextMarker) {
-    const output = await this._awsS3.send(new clientS3.ListObjectsV2Command({
+    const output = await this._awsS3.send(new ListObjectsV2Command({
       Bucket: this._credentials.bucketName,
       Delimiter: '/',
       ContinuationToken: nextMarker,
@@ -154,8 +152,8 @@ class S3 {
   }
 
   async upload (filePath, key, contentType) {
-    await this._awsS3.send(new clientS3.PutObjectCommand({
-      Body: await (util.promisify(fs.readFile)(filePath)),
+    await this._awsS3.send(new PutObjectCommand({
+      Body: await (promisify(fs.readFile)(filePath)),
       ContentType: contentType,
       Key: key,
       ACL: 'public-read',
@@ -282,8 +280,8 @@ const safeSplit = path => (
 
 const removeSlashes = path => path.replace(/\//g, '');
 
-const safeBase32Encode = path => safeSplit(rfc4648.base32.stringify(Buffer.from(path, 'utf8')));
-const safeBase32Decode = path => Buffer.from(rfc4648.base32.parse(removeSlashes(path))).toString('utf8');
+const safeBase32Encode = path => safeSplit(base32.stringify(Buffer.from(path, 'utf8')));
+const safeBase32Decode = path => Buffer.from(base32.parse(removeSlashes(path))).toString('utf8');
 
 const clusterize = array => array.reduce(
   (acc, value) => {
@@ -332,7 +330,7 @@ const asyncMap$1 = async (array, closure) => await Promise.all(array.map(closure
 
 var temporaryFile = async postfix => {
   const { fd, path, cleanup } = await tmpPromise.file({ postfix });
-  await util.promisify(fs.close)(fd); // we dont need file descriptor
+  await promisify(fs.close)(fd); // we dont need file descriptor
 
   return { path, cleanup }
 };
@@ -358,8 +356,8 @@ async function comparePNGs (pngBefore, pngAfter, outputPath, filePixelRatio) {
   const { equal, diffClusters } = await looksSame(pngBefore, pngAfter, looksSameOptions);
   if (equal) return { equal }
 
-  const dimensions = await util.promisify(imageSize)(pngBefore);
-  if (diffClusters.length !== 0 && areDimensionsSame(dimensions, await util.promisify(imageSize)(pngAfter))) {
+  const dimensions = await promisify(imageSize)(pngBefore);
+  if (diffClusters.length !== 0 && areDimensionsSame(dimensions, await promisify(imageSize)(pngAfter))) {
     dimensions.width /= pixelRatio;
     dimensions.height /= pixelRatio;
 
@@ -491,7 +489,7 @@ const checkIfCanComment = async () => {
     token: checkEnvVariableAndReturn('SWATCHER_GITHUB_API_TOKEN'),
     apiURL: checkEnvVariableAndReturn('GITHUB_API_URL'),
     eventName: checkEnvVariableAndReturn('GITHUB_EVENT_NAME'),
-    eventPayload: await sjson.parse(await util.promisify(fs.readFile)(checkEnvVariableAndReturn('GITHUB_EVENT_PATH'), 'utf8'))
+    eventPayload: await sjson.parse(await promisify(fs.readFile)(checkEnvVariableAndReturn('GITHUB_EVENT_PATH'), 'utf8'))
   }
 };
 
@@ -608,7 +606,7 @@ var diffLocalCommand = async (fileA, fileB, outputFile) => {
   }
 };
 
-commander
+program
   .version(swatcherVersion)
   .name('Swatcher - track UI changes like a git history')
   .description(
@@ -620,24 +618,24 @@ commander
     'testing, this is history of the each screen\'s snapshot.'
   );
 
-commander
+program
   .command('collect <dir> [other_dirs...]')
   .description('Collect screenshots from specified directory')
   .action(collectCommand);
 
-commander
+program
   .command('generate-diff')
   .description('Generate diffs for already collected screenshots')
   .action(generateDiffCommand);
 
-commander
+program
   .command('diff-local <A_png> <B_png> <output_png>')
   .description('Create a diff file for locally available files')
   .action(diffLocalCommand);
 
 async function main () {
   try {
-    await commander.parseAsync();
+    await program.parseAsync();
   } catch (error) {
     console.error(error.name, error.message);
     process.exit(1);

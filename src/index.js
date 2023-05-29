@@ -1,10 +1,10 @@
-import commander from 'commander'
+import { program } from 'commander'
 import swatcherVersion from '../version'
 import collectCommand from './collect_command'
 import generateDiffCommand from './generate_diff_command'
 import diffLocalCommand from './diff_local_command'
 
-commander
+program
   .version(swatcherVersion)
   .name('Swatcher - track UI changes like a git history')
   .description(
@@ -16,24 +16,24 @@ commander
     'testing, this is history of the each screen\'s snapshot.'
   )
 
-commander
+program
   .command('collect <dir> [other_dirs...]')
   .description('Collect screenshots from specified directory')
   .action(collectCommand)
 
-commander
+program
   .command('generate-diff')
   .description('Generate diffs for already collected screenshots')
   .action(generateDiffCommand)
 
-commander
+program
   .command('diff-local <A_png> <B_png> <output_png>')
   .description('Create a diff file for locally available files')
   .action(diffLocalCommand)
 
 async function main () {
   try {
-    await commander.parseAsync()
+    await program.parseAsync()
   } catch (error) {
     console.error(error.name, error.message)
     process.exit(1)

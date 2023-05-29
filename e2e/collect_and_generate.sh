@@ -44,8 +44,8 @@ export GITHUB_EVENT_PATH='/tmp/github_payload.json'
 
 cp "${PROJECT_DIR}/e2e/fixtures/ipad-1.png" "$TEMP_DIR/ipad_home.png"
 cp "${PROJECT_DIR}/e2e/fixtures/ipad-3.png" "$TEMP_DIR/ipad_apps.png"
-"${PROJECT_DIR}/dist/index.js" collect "$TEMP_DIR"
-"${PROJECT_DIR}/dist/index.js" generate-diff
+"${PROJECT_DIR}/dist/index.mjs" collect "$TEMP_DIR"
+"${PROJECT_DIR}/dist/index.mjs" generate-diff
 
 ## clean the pushed commit
 find "$TEMP_DIR" -mindepth 1 -delete
@@ -68,8 +68,8 @@ EOF
 
 cp "${PROJECT_DIR}/e2e/fixtures/ipad-2.png" "$TEMP_DIR/ipad_home.png"
 cp "${PROJECT_DIR}/e2e/fixtures/ipad-4.png" "$TEMP_DIR/ipad_settings.png"
-"${PROJECT_DIR}/dist/index.js" collect "$TEMP_DIR"
-"${PROJECT_DIR}/dist/index.js" generate-diff
+"${PROJECT_DIR}/dist/index.mjs" collect "$TEMP_DIR"
+"${PROJECT_DIR}/dist/index.mjs" generate-diff
 
 curl -H "Authorization: token $SWATCHER_GITHUB_API_TOKEN" "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/issues/1/comments"
 
