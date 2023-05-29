@@ -1,4 +1,4 @@
-import commander from 'commander'
+import { program } from 'commander'
 import swatcherVersion from '../../version'
 import collectCommand from '../collect_command'
 import generateDiffCommand from '../generate_diff_command'
@@ -19,7 +19,10 @@ jest.mock('commander', () => {
     return mock
   })
 
-  return mock
+  return {
+    __esModule: true,
+    program: mock
+  }
 })
 
 jest.mock('../collect_command', () => ({ __esModule: true, default: jest.fn() }))
@@ -31,26 +34,26 @@ global.process.exit = jest.fn()
 
 it('should configure commander', () => {
   require('../index.js')
-  expect(commander.version).toHaveBeenCalledWith(swatcherVersion)
-  expect(commander.name).toHaveBeenCalled()
-  expect(commander.description).toHaveBeenCalledTimes(1)
+  expect(program.version).toHaveBeenCalledWith(swatcherVersion)
+  expect(program.name).toHaveBeenCalled()
+  expect(program.description).toHaveBeenCalledTimes(1)
 
-  expect(commander.command).toHaveBeenCalledTimes(3)
+  expect(program.command).toHaveBeenCalledTimes(3)
 
-  expect(commander.command.mock.calls[0][0]).toMatch('collect')
-  expect(commander.command.mock.results[0].value.description).toHaveBeenCalledTimes(1)
-  expect(commander.command.mock.results[0].value.action).toHaveBeenCalledWith(collectCommand)
-  expect(commander.command.mock.results[0].value.action).toHaveBeenCalledTimes(1)
+  expect(program.command.mock.calls[0][0]).toMatch('collect')
+  expect(program.command.mock.results[0].value.description).toHaveBeenCalledTimes(1)
+  expect(program.command.mock.results[0].value.action).toHaveBeenCalledWith(collectCommand)
+  expect(program.command.mock.results[0].value.action).toHaveBeenCalledTimes(1)
 
-  expect(commander.command.mock.calls[1][0]).toMatch('generate-diff')
-  expect(commander.command.mock.results[1].value.description).toHaveBeenCalledTimes(1)
-  expect(commander.command.mock.results[1].value.action).toHaveBeenCalledWith(generateDiffCommand)
-  expect(commander.command.mock.results[1].value.action).toHaveBeenCalledTimes(1)
+  expect(program.command.mock.calls[1][0]).toMatch('generate-diff')
+  expect(program.command.mock.results[1].value.description).toHaveBeenCalledTimes(1)
+  expect(program.command.mock.results[1].value.action).toHaveBeenCalledWith(generateDiffCommand)
+  expect(program.command.mock.results[1].value.action).toHaveBeenCalledTimes(1)
 
-  expect(commander.command.mock.calls[2][0]).toMatch('diff-local')
-  expect(commander.command.mock.results[2].value.description).toHaveBeenCalledTimes(1)
-  expect(commander.command.mock.results[2].value.action).toHaveBeenCalledWith(diffLocalCommand)
-  expect(commander.command.mock.results[2].value.action).toHaveBeenCalledTimes(1)
+  expect(program.command.mock.calls[2][0]).toMatch('diff-local')
+  expect(program.command.mock.results[2].value.description).toHaveBeenCalledTimes(1)
+  expect(program.command.mock.results[2].value.action).toHaveBeenCalledWith(diffLocalCommand)
+  expect(program.command.mock.results[2].value.action).toHaveBeenCalledTimes(1)
 
-  expect(commander.parseAsync).toHaveBeenCalledTimes(1)
+  expect(program.parseAsync).toHaveBeenCalledTimes(1)
 })

@@ -1,6 +1,6 @@
 {
   "name": "@del-systems/swatcher",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "Screenshot Watcher",
   "keywords": [
     "screenshots",
@@ -20,7 +20,7 @@
   "author": "Shakhzod Ikromov <aabbcc.double@gmail.com>",
   "main": "src/index.js",
   "bin": {
-    "swatcher": "dist/index.js"
+    "swatcher": "dist/index.mjs"
   },
   "directories": {
     "man": "man/"
@@ -30,11 +30,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.223.0",
-    "commander": "^9.0.0",
+    "commander": "^10.0.1",
     "image-size": "^1.0.0",
     "looks-same": "^8.1.0",
     "node-downloader-helper": "^2.1.1",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.3.1",
     "rfc4648": "^1.4.0",
     "secure-json-parse": "^2.1.0",
     "tmp-promise": "^3.0.2"
@@ -46,9 +46,6 @@
     "@babel/preset-env": "^7.12.11",
     "@babel/register": "^7.12.10",
     "@babel/runtime": "^7.12.5",
-    "@rollup/plugin-commonjs": "^23.0.2",
-    "@rollup/plugin-json": "^5.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
     "babel-jest": "^29.3.1",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",

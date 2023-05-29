@@ -1,12 +1,9 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-
 export default {
   input: 'src/index.js',
+  plugins: [],
   output: {
-    file: 'dist/index.js',
-    format: 'cjs',
+    file: 'dist/index.mjs',
+    format: 'es',
     banner: '#!/usr/bin/env node'
   }
 }

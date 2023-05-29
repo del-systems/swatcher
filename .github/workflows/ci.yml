@@ -81,7 +81,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: docker run --entrypoint sh -v "$(realpath .):/data" buildkite/puppeteer:latest /data/demo/render_using_catage.sh
-      - run: npm ci && dist/index.js collect . && dist/index.js generate-diff
+      - run: npm ci && dist/index.mjs collect . && dist/index.mjs generate-diff
         env:
           SWATCHER_S3_SECRET_KEY: ${{ secrets.SWATCHER_S3_SECRET_KEY }}
           SWATCHER_S3_REGION: ${{ secrets.SWATCHER_S3_REGION }}
