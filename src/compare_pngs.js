@@ -65,7 +65,15 @@ const doesClusterContains = (bigger, smaller) => (
 )
 
 const isClusterHomeIndicator = (dimensions, cluster) => (
-  isInRange(cluster.height, 4, 6) && isInRange(dimensions.height - cluster.bottom, 7, 9)
+  doesClusterContains(
+    {
+      left: (dimensions.width - 148) / 2,
+      top: dimensions.height - 15,
+      right: (dimensions.width + 148) / 2,
+      bottom: dimensions.height
+    },
+    cluster
+  )
 )
 
 const isClusterTextFieldCaret = (dimensions, cluster) => (

@@ -25,3 +25,11 @@ it('should ignore iOS home indicator but nothing else', async () => {
   )
   expect(equal).toBeFalsy()
 }, DEFAULT_TIMEOUT)
+
+it('should ignore iOS home indicator', async () => {
+  const { equal } = await comparePNGs(
+    fixturePath('iphone_home_1.png'),
+    fixturePath('iphone_home_2.png')
+  )
+  expect(equal).toBeTruthy()
+}, DEFAULT_TIMEOUT)
