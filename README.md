@@ -10,4 +10,4 @@ _Forget answering questions when the particular screen was changed and why_
 This project aimed to collect screenshots from UI tests and store them to S3 compatible storage. Screenshots are referenced by their name and every new one will be compared with old ones. It will be displayed in HTML report if there any differences. This is not screenshot or snapshot testing, this is history of the each screen's snapshot.
 
 ## Maintenance
-<img src="https://codecov.io/gh/del-systems/swatcher/branch/master/graphs/commits.svg?token=V7AJCMJI7V">
+<img src="https://codecov.io/gh/del-systems/swatcher/graphs/tree.svg?token=V7AJCMJI7V">

@@ -14,7 +14,9 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npx gulp
-      - run: bash <(curl -s https://codecov.io/bash)
+      - uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -72,7 +74,7 @@ jobs:
           assert.ok(semver.valid(version))
           EOF
           npx babel-node check_version.js
-      - uses: del-systems/check-if-version-bumped@v1
+      - uses: del-systems/check-if-version-bumped@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
   demo:
