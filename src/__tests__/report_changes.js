@@ -59,7 +59,7 @@ it('should fail when url request is bad', async () => {
 it('should post a message when there are no errors', async () => {
   const resetEnvVariables = fakeEnv({
     GITHUB_REPOSITORY: 'del-systems/swatcher',
-    SWATCHER_GITHUB_API_TOKEN: '***',
+    SWATCHER_GITHUB_API_TOKEN: 'sampleToken',
     GITHUB_API_URL: 'https://api.github.com',
     GITHUB_EVENT_NAME: 'pull_request'
   })
@@ -67,7 +67,7 @@ it('should post a message when there are no errors', async () => {
 
   await expect(reportChanges('This is body')).resolves.toBeUndefined()
 
-  const headers = { Authorization: 'token ***', Accept: 'application/vnd.github.v3+json' }
+  const headers = { Authorization: 'token sampleToken', Accept: 'application/vnd.github.v3+json' }
   expect(nodeFetch.mock.calls).toEqual([
     ['https://api.github.com/repos/del-systems/swatcher/issues/1/comments', { headers }],
     ['https://api.github.com/repos/del-systems/swatcher/issues/1/comments', { headers, body: expect.anything(), method: 'POST' }],
