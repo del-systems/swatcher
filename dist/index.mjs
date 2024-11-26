@@ -13,7 +13,7 @@ import looksSame from 'looks-same';
 import imageSize from 'image-size';
 import nodeFetch from 'node-fetch';
 
-var swatcherVersion = '2.0.1';
+var swatcherVersion = '2.0.2';
 
 class GithubActionsEnvironment {
   constructor (githubPayload) {
