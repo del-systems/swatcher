@@ -48,7 +48,7 @@ jobs:
       - run: bundle exec ronn -r man/swatcher.md
         if: ${{ steps.pr-files.outputs.is-documentation-updated == true }}
       - run: npm ci
-      - run: npx gulp
+      - run: npx rollup -c
       - name: check if freshly built dist folder differs from commited one
         run: git status --porcelain | tee /dev/stderr | ( ! grep -q '.' )
   e2e:
